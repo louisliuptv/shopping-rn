@@ -1,6 +1,7 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, fontWeight, space, radius, metrics } from '../../../app/theme/tokens';
+import { StyleSheet, View } from 'react-native';
+import { Text, TouchableRipple, useTheme } from 'react-native-paper';
+import { space, radius, metrics } from '../../../app/theme/tokens';
 import type { Food } from '../../../domain/entities/shop';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
@@ -12,65 +13,74 @@ interface FoodRowProps {
 }
 
 export function FoodRow({ food, onPress }: FoodRowProps) {
+  const theme = useTheme();
+
   return (
-    <Pressable
-      style={styles.row}
+    <TouchableRipple
       onPress={() => onPress(food)}
       testID={`food-row-${food.id}`}
       accessibilityRole="button"
     >
-      <RemoteImage
-        uri={food.icon}
-        width={metrics.foodThumbSize}
-        height={metrics.foodThumbSize}
-        style={styles.icon}
-      />
-      <View style={styles.content}>
-        <Text style={styles.name} numberOfLines={1}>
-          {food.name}
-        </Text>
-        {food.description ? (
-          <Text style={styles.desc} numberOfLines={1}>
-            {food.description}
+      <View style={styles.row}>
+        <RemoteImage
+          uri={food.icon}
+          width={metrics.foodThumbSize}
+          height={metrics.foodThumbSize}
+          borderRadius={radius.m}
+          style={styles.thumb}
+        />
+        <View style={styles.content}>
+          <Text variant="titleSmall" numberOfLines={1} style={{ color: theme.colors.onSurface }}>
+            {food.name}
           </Text>
-        ) : null}
-        <View style={styles.extra}>
-          <Text style={styles.extraText}>{food.sellCount} sold</Text>
-          <Text style={styles.extraText}>{food.rating}% positive</Text>
-        </View>
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>¥{formatPrice(food.price)}</Text>
-          {food.oldPrice ? <Text style={styles.oldPrice}>¥{food.oldPrice}</Text> : null}
+          {food.description ? (
+            <Text
+              variant="bodySmall"
+              numberOfLines={1}
+              style={{ color: theme.colors.onSurfaceVariant, marginTop: space[2] }}
+            >
+              {food.description}
+            </Text>
+          ) : null}
+          <Text
+            variant="bodySmall"
+            numberOfLines={1}
+            style={{ color: theme.colors.onSurfaceVariant, marginTop: space[4] }}
+          >
+            {food.sellCount} sold · {food.rating}% positive
+          </Text>
+          <View style={styles.priceRow}>
+            <Text variant="titleMedium" style={{ color: theme.colors.error }}>
+              ¥{formatPrice(food.price)}
+            </Text>
+            {food.oldPrice ? (
+              <Text
+                variant="bodySmall"
+                style={[styles.oldPrice, { color: theme.colors.onSurfaceVariant }]}
+              >
+                ¥{food.oldPrice}
+              </Text>
+            ) : null}
+            <View style={styles.control}>
+              <CartControl foodId={food.id} />
+            </View>
+          </View>
         </View>
       </View>
-      <View style={styles.control}>
-        <CartControl foodId={food.id} />
-      </View>
-    </Pressable>
+    </TouchableRipple>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
+    height: metrics.foodRowHeight,
     flexDirection: 'row',
-    marginHorizontal: space[18],
-    marginTop: space[18],
-    paddingBottom: space[18],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
+    alignItems: 'center',
+    paddingHorizontal: space[18],
   },
-  icon: { marginRight: space[10], borderRadius: radius.s },
-  content: { flex: 1, minHeight: metrics.foodRowMinHeight },
-  name: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
-  desc: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: space[8] },
-  extra: { flexDirection: 'row', marginBottom: space[4] },
-  extraText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: space[12] },
-  priceRow: { flexDirection: 'row', alignItems: 'baseline' },
-  price: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.red, marginRight: space[8] },
-  oldPrice: {
-    fontSize: fontSize.smallS,
-    color: colors.lightGrey,
-    textDecorationLine: 'line-through',
-  },
-  control: { position: 'absolute', right: space[0], bottom: space[12] },
+  thumb: { marginRight: space[12] },
+  content: { flex: 1 },
+  priceRow: { flexDirection: 'row', alignItems: 'center', marginTop: space[4] },
+  oldPrice: { marginLeft: space[6], textDecorationLine: 'line-through' },
+  control: { marginLeft: 'auto' },
 });

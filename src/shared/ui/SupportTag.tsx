@@ -1,13 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import {
-  colors,
-  fontWeight,
-  space,
-  radius,
-  metrics,
-  supportTagSizes,
-} from '../../app/theme/tokens';
+import { StyleSheet } from 'react-native';
+import { Surface, Text } from 'react-native-paper';
+import { colors, radius, metrics, supportTagSizes } from '../../app/theme/tokens';
 import type { Support } from '../../domain/entities/shop';
 
 const BADGES: Record<number, { label: string; background: string }> = {
@@ -28,17 +22,15 @@ export function SupportTag({ support, size = 1 }: SupportTagProps) {
   const variant = supportTagSizes[size as keyof typeof supportTagSizes] ?? supportTagSizes[1];
 
   return (
-    <View
+    <Surface
+      elevation={0}
       style={[styles.tag, { height: variant.height, backgroundColor: badge.background }]}
       accessibilityLabel={support.description}
     >
-      <Text
-        style={[styles.label, { fontSize: variant.font, lineHeight: variant.height }]}
-        numberOfLines={1}
-      >
+      <Text style={{ color: colors.white, fontSize: variant.font, lineHeight: variant.height }}>
         {badge.label}
       </Text>
-    </View>
+    </Surface>
   );
 }
 
@@ -46,9 +38,8 @@ const styles = StyleSheet.create({
   tag: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: space[3],
+    paddingHorizontal: 3,
     minWidth: metrics.supportTagMinWidth,
     borderRadius: radius.s,
   },
-  label: { color: colors.white, fontWeight: fontWeight.bold },
 });

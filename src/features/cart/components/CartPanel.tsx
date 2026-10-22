@@ -1,6 +1,7 @@
 import React from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, fontWeight, space, radius } from '../../../app/theme/tokens';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Button, Divider, List, Modal, Surface, Text, useTheme } from 'react-native-paper';
+import { space } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import type { CartSummary } from '../../../domain/usecases/cartUseCases';
 import { CartControl } from './CartControl';
@@ -13,90 +14,55 @@ interface CartPanelProps {
 }
 
 export function CartPanel({ visible, summary, onClose, bottomOffset }: CartPanelProps) {
+  const theme = useTheme();
+
   return (
     <Modal
       visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-      statusBarTranslucent
+      onDismiss={onClose}
+      style={styles.wrapper}
+      contentContainerStyle={{ marginBottom: bottomOffset }}
     >
-      <View style={styles.root}>
-        <Pressable
-          style={styles.backdrop}
-          onPress={onClose}
-          accessibilityLabel="Close cart"
-          testID="cart-panel-backdrop"
-        />
-        <View style={[styles.panel, { paddingBottom: bottomOffset }]}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Cart</Text>
-            <Pressable onPress={onClose} hitSlop={space[8]}>
-              <Text style={styles.clear}>Close</Text>
-            </Pressable>
-          </View>
-          <FlatList
-            data={summary.entries}
-            keyExtractor={item => item.food.id}
-            style={styles.list}
-            ItemSeparatorComponent={ItemSeparator}
-            renderItem={({ item }) => (
-              <View style={styles.row}>
-                <Text style={styles.name} numberOfLines={1}>
-                  {item.food.name}
-                </Text>
-                <Text style={styles.price}>¥{formatPrice(item.food.price * item.count)}</Text>
-                <CartControl foodId={item.food.id} />
-              </View>
-            )}
-          />
+      <Surface elevation={1} style={styles.surface}>
+        <View style={styles.header}>
+          <Text variant="titleMedium">Cart</Text>
+          <Button compact onPress={onClose}>
+            Close
+          </Button>
         </View>
-      </View>
+        <Divider />
+        <FlatList
+          data={summary.entries}
+          keyExtractor={item => item.food.id}
+          style={styles.list}
+          ItemSeparatorComponent={() => <Divider />}
+          renderItem={({ item }) => (
+            <List.Item
+              title={item.food.name}
+              titleStyle={{ color: theme.colors.onSurface }}
+              description={`¥${formatPrice(item.food.price * item.count)}`}
+              descriptionStyle={{ color: theme.colors.primary }}
+              right={() => <CartControl foodId={item.food.id} />}
+              style={styles.row}
+            />
+          )}
+        />
+      </Surface>
     </Modal>
   );
 }
 
-function ItemSeparator() {
-  return <View style={styles.separator} />;
-}
-
 const styles = StyleSheet.create({
-  root: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.backgroundSS },
-  panel: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: radius.m,
-    borderTopRightRadius: radius.m,
-    maxHeight: '60%',
-  },
+  wrapper: { justifyContent: 'flex-end' },
+  surface: { borderTopLeftRadius: 16, borderTopRightRadius: 16, overflow: 'hidden' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: space[18],
-    paddingVertical: space[12],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
+    paddingLeft: space[18],
+    paddingRight: space[8],
+    paddingVertical: space[6],
   },
-  headerText: { fontSize: fontSize.medium, color: colors.darkGrey, fontWeight: fontWeight.semibold },
-  clear: { fontSize: fontSize.small, color: colors.blue },
   list: { flexGrow: 0 },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.rowLine,
-    marginLeft: space[18],
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: space[18],
-    paddingVertical: space[12],
-  },
-  name: { flex: 1, fontSize: fontSize.medium, color: colors.darkGrey, marginRight: space[8] },
-  price: {
-    fontSize: fontSize.medium,
-    color: colors.red,
-    fontWeight: fontWeight.bold,
-    marginRight: space[12],
-  },
+  row: { paddingHorizontal: space[18] },
 });

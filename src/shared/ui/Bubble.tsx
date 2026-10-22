@@ -1,34 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, fontWeight, space, radius, metrics } from '../../app/theme/tokens';
+import { Badge } from 'react-native-paper';
+import { colors, metrics } from '../../app/theme/tokens';
 
-export function Bubble({ count, testID }: { count: number; testID?: string }) {
+interface BubbleProps {
+  count: number;
+  testID?: string;
+}
+
+export function Bubble({ count, testID }: BubbleProps) {
   if (!count) {
     return null;
   }
   return (
-    <View style={styles.bubble} testID={testID}>
-      <Text style={styles.text} numberOfLines={1}>
-        {count > 99 ? '99+' : count}
-      </Text>
-    </View>
+    <Badge
+      testID={testID}
+      size={metrics.bubbleHeight}
+      style={{ backgroundColor: colors.red }}
+    >
+      {count > 99 ? '99+' : count}
+    </Badge>
   );
 }
-
-const styles = StyleSheet.create({
-  bubble: {
-    minWidth: metrics.bubbleMinWidth,
-    height: metrics.bubbleHeight,
-    paddingHorizontal: space[5],
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.red,
-  },
-  text: {
-    color: colors.white,
-    fontSize: fontSize.smallS,
-    fontWeight: fontWeight.bold,
-    fontFamily: 'Helvetica',
-  },
-});

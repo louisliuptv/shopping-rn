@@ -1,18 +1,18 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, Chip, Divider, Icon, List, Surface, Text, useTheme } from 'react-native-paper';
 import { appConfig } from '../../../app/config/appConfig';
-import { colors, fontSize, lineHeight, space, radius, metrics } from '../../../app/theme/tokens';
+import { colors, space, metrics } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
-import { Split } from '../../../shared/ui/Split';
 import { Star } from '../../../shared/ui/Star';
-import { SupportTag } from '../../../shared/ui/SupportTag';
 import { useFavoriteStore } from '../store/favoriteStore';
 import { useSeller } from '../hooks/useSeller';
 
 export function SellerScreen() {
+  const theme = useTheme();
   const sellerId = appConfig.sellerId;
   const insets = useSafeAreaInsets();
   const sellerQuery = useSeller(sellerId);
@@ -36,62 +36,79 @@ export function SellerScreen() {
       contentContainerStyle={{ paddingBottom: insets.bottom + space[24] }}
     >
       <View style={styles.overview}>
-        <Text style={styles.title}>{seller.name}</Text>
+        <Text variant="titleMedium" style={styles.title}>
+          {seller.name}
+        </Text>
         <View style={styles.desc}>
           <Star score={seller.score} size={metrics.sellerStarSize} />
-          <Text style={styles.descText}>({seller.ratingCount})</Text>
-          <Text style={styles.descText}>{seller.sellCount} orders</Text>
+          <Text variant="bodySmall" style={styles.descText}>
+            ({seller.ratingCount})
+          </Text>
+          <Text variant="bodySmall" style={styles.descText}>
+            {seller.sellCount} orders
+          </Text>
         </View>
         <View style={styles.remark}>
-          <View style={[styles.block, styles.blockDivider]}>
-            <Text style={styles.blockTitle}>Min order</Text>
-            <Text style={styles.blockContent}>
-              ¥<Text style={styles.stress}>{formatPrice(seller.minPrice)}</Text>
+          <Surface elevation={1} style={styles.block}>
+            <Text variant="labelSmall" style={styles.blockTitle}>
+              Min order
             </Text>
-          </View>
-          <View style={[styles.block, styles.blockDivider]}>
-            <Text style={styles.blockTitle}>Delivery fee</Text>
-            <Text style={styles.blockContent}>
-              ¥<Text style={styles.stress}>{formatPrice(seller.deliveryPrice)}</Text>
+            <Text variant="titleMedium" style={styles.blockContent}>
+              ¥{formatPrice(seller.minPrice)}
             </Text>
-          </View>
-          <View style={styles.block}>
-            <Text style={styles.blockTitle}>Avg. delivery</Text>
-            <Text style={styles.blockContent}>
-              <Text style={styles.stress}>{seller.deliveryTime}</Text> min
+          </Surface>
+          <Surface elevation={1} style={styles.block}>
+            <Text variant="labelSmall" style={styles.blockTitle}>
+              Delivery fee
             </Text>
-          </View>
+            <Text variant="titleMedium" style={styles.blockContent}>
+              ¥{formatPrice(seller.deliveryPrice)}
+            </Text>
+          </Surface>
+          <Surface elevation={1} style={styles.block}>
+            <Text variant="labelSmall" style={styles.blockTitle}>
+              Avg. delivery
+            </Text>
+            <Text variant="titleMedium" style={styles.blockContent}>
+              {seller.deliveryTime} min
+            </Text>
+          </Surface>
         </View>
-
-        <Pressable
-          style={styles.favorite}
+        <Button
+          mode={favorite ? 'contained' : 'outlined'}
+          icon={favorite ? 'heart' : 'heart-outline'}
           onPress={() => toggleFavorite(sellerId)}
-          accessibilityRole="switch"
-          accessibilityState={{ checked: favorite }}
           testID="seller-favorite"
+          style={styles.favorite}
         >
-          <Text style={[styles.favoriteIcon, favorite && styles.favoriteIconActive]}>♥</Text>
-          <Text style={styles.favoriteText}>{favorite ? 'Saved' : 'Save'}</Text>
-        </Pressable>
+          {favorite ? 'Saved' : 'Save'}
+        </Button>
       </View>
 
-      <Split />
+      <Divider />
 
-      <View style={styles.bulletin}>
-        <Text style={styles.sectionTitle}>Announcements</Text>
-        <Text style={styles.bulletinText}>{seller.bulletin}</Text>
-        {seller.supports.map((support, index) => (
-          <View key={`${support.type}-${index}`} style={styles.supportItem}>
-            <SupportTag support={support} size={4} />
-            <Text style={styles.supportText}>{support.description}</Text>
-          </View>
-        ))}
+      <View style={styles.section}>
+        <Text variant="titleSmall" style={styles.sectionTitle}>
+          Announcements
+        </Text>
+        <Text variant="bodyMedium" style={[styles.bulletinText, { color: theme.colors.error }]}>
+          {seller.bulletin}
+        </Text>
+        <View style={styles.chips}>
+          {seller.supports.map((support, index) => (
+            <Chip key={`${support.type}-${index}`} compact icon="ticket-percent-outline" style={styles.chip}>
+              {support.description}
+            </Chip>
+          ))}
+        </View>
       </View>
 
-      <Split />
+      <Divider />
 
-      <View style={styles.pics}>
-        <Text style={styles.sectionTitle}>Photos</Text>
+      <View style={styles.section}>
+        <Text variant="titleSmall" style={styles.sectionTitle}>
+          Photos
+        </Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {seller.pics.map((pic, index) => (
             <RemoteImage
@@ -99,87 +116,51 @@ export function SellerScreen() {
               uri={pic}
               width={metrics.sellerPhotoWidth}
               height={metrics.sellerPhotoHeight}
+              borderRadius={8}
               style={styles.pic}
             />
           ))}
         </ScrollView>
       </View>
 
-      <Split />
+      <Divider />
 
-      <View style={styles.info}>
-        <Text style={styles.sectionTitle}>About</Text>
+      <List.Section>
+        <List.Subheader>About</List.Subheader>
         {seller.infos.map((info, index) => (
-          <Text key={`${info}-${index}`} style={styles.infoItem}>
-            {info}
-          </Text>
+          <React.Fragment key={`${info}-${index}`}>
+            <List.Item title={info} titleNumberOfLines={3} left={props => <List.Icon {...props} icon="store-outline" />} />
+            {index < seller.infos.length - 1 ? <Divider /> : null}
+          </React.Fragment>
         ))}
+      </List.Section>
+
+      <View style={styles.footer}>
+        <Icon source="map-marker-outline" size={18} color={colors.lightGrey} />
+        <Text variant="bodySmall" style={{ color: colors.lightGrey }}>
+          {seller.description}
+        </Text>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
+  root: { flex: 1 },
   overview: { padding: space[18] },
-  title: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
-  desc: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: space[18],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
-  },
-  descText: { fontSize: fontSize.smallS, color: colors.grey, marginLeft: space[8] },
-  remark: { flexDirection: 'row', paddingTop: space[18] },
-  block: { flex: 1, alignItems: 'center' },
-  blockDivider: {
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.colLine,
-  },
-  blockTitle: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: space[4] },
-  blockContent: { fontSize: fontSize.smallS, color: colors.darkGrey },
-  stress: { fontSize: fontSize.largeXXX, color: colors.darkGrey },
-  favorite: {
-    position: 'absolute',
-    right: metrics.sellerFavoriteInset,
-    top: space[18],
-    width: metrics.sellerFavoriteWidth,
-    alignItems: 'center',
-  },
-  favoriteIcon: { fontSize: fontSize.largeXXX, color: colors.lightGreyS, marginBottom: space[4] },
-  favoriteIconActive: { color: colors.red },
-  favoriteText: { fontSize: fontSize.smallS, color: colors.grey },
-  bulletin: { paddingHorizontal: space[18], paddingTop: space[18] },
-  sectionTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
-  bulletinText: {
-    fontSize: fontSize.small,
-    lineHeight: lineHeight.relaxed,
-    color: colors.red,
-    paddingHorizontal: space[12],
-    paddingBottom: space[16],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
-  },
-  supportItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: space[16],
-    paddingHorizontal: space[12],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
-  },
-  supportText: { fontSize: fontSize.small, color: colors.darkGrey, marginLeft: space[6] },
-  pics: { padding: space[18] },
-  pic: { marginRight: space[6], borderRadius: radius.s },
-  info: { paddingHorizontal: space[18], paddingTop: space[18] },
-  infoItem: {
-    fontSize: fontSize.small,
-    lineHeight: lineHeight.compact,
-    color: colors.darkGrey,
-    paddingVertical: space[16],
-    paddingHorizontal: space[12],
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.rowLine,
-  },
+  title: { marginBottom: space[8] },
+  desc: { flexDirection: 'row', alignItems: 'center', paddingBottom: space[18] },
+  descText: { marginLeft: space[8] },
+  remark: { flexDirection: 'row', marginBottom: space[18] },
+  block: { flex: 1, marginRight: space[8], padding: space[12], borderRadius: 12 },
+  blockTitle: { marginBottom: space[4] },
+  blockContent: { fontWeight: '700' },
+  favorite: { alignSelf: 'flex-start' },
+  section: { paddingHorizontal: space[18], paddingVertical: space[16] },
+  sectionTitle: { marginBottom: space[8] },
+  bulletinText: { marginBottom: space[12] },
+  chips: { flexDirection: 'row', flexWrap: 'wrap' },
+  chip: { marginRight: space[6], marginBottom: space[6] },
+  pic: { marginRight: space[8] },
+  footer: { flexDirection: 'row', alignItems: 'center', padding: space[18] },
 });

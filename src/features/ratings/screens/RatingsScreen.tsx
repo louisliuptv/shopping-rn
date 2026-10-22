@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
+import { Divider, Surface } from 'react-native-paper';
 import { appConfig } from '../../../app/config/appConfig';
-import { colors, space } from '../../../app/theme/tokens';
+import { space } from '../../../app/theme/tokens';
 import { countRatings, filterRatings } from '../../../domain/usecases/ratingUseCases';
 import { EmptyState, ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
-import { Split } from '../../../shared/ui/Split';
 import { useSeller } from '../../seller/hooks/useSeller';
 import { RatingFilter } from '../components/RatingFilter';
 import { RatingOverview } from '../components/RatingOverview';
@@ -48,17 +48,21 @@ export function RatingsScreen() {
       data={visible}
       keyExtractor={(item, index) => `${item.username}-${item.rateTime}-${index}`}
       renderItem={({ item }) => <RatingRow rating={item} />}
+      ItemSeparatorComponent={() => <Divider />}
       ListHeaderComponent={
         <View>
-          <RatingOverview seller={sellerQuery.data} />
-          <Split />
-          <RatingFilter
-            filter={filter}
-            counts={counts}
-            onlyContent={onlyContent}
-            onChangeFilter={setFilter}
-            onToggleOnlyContent={toggleOnlyContent}
-          />
+          <Surface elevation={0}>
+            <RatingOverview seller={sellerQuery.data} />
+            <Divider />
+            <RatingFilter
+              filter={filter}
+              counts={counts}
+              onlyContent={onlyContent}
+              onChangeFilter={setFilter}
+              onToggleOnlyContent={toggleOnlyContent}
+            />
+            <Divider />
+          </Surface>
         </View>
       }
       ListEmptyComponent={<EmptyState message="No matching reviews" />}
@@ -68,6 +72,6 @@ export function RatingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
+  root: { flex: 1 },
   content: { paddingHorizontal: space[18] },
 });

@@ -1,17 +1,12 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import {
-  SectionList,
-  StyleSheet,
-  Text,
-  View,
-  type ViewToken,
-} from 'react-native';
+import { SectionList, StyleSheet, View, type ViewToken } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, useTheme } from 'react-native-paper';
 import { appConfig } from '../../../app/config/appConfig';
 import type { RootStackParamList } from '../../../app/navigation/types';
-import { colors, fontSize, space, borderWidth, metrics } from '../../../app/theme/tokens';
+import { colors, space, metrics } from '../../../app/theme/tokens';
 import type { Food } from '../../../domain/entities/shop';
 import { countByGroup } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
@@ -35,6 +30,7 @@ export function GoodsScreen() {
   const sellerId = appConfig.sellerId;
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
 
   const goodsQuery = useGoods(sellerId);
   const sellerQuery = useSeller(sellerId);
@@ -56,9 +52,19 @@ export function GoodsScreen() {
     [goods],
   );
 
+  const sectionOffsets = useMemo(() => {
+    let offset = 0;
+    return sections.map(section => {
+      const top = offset;
+      offset += metrics.sectionHeaderHeight + section.data.length * metrics.foodRowHeight;
+      return top;
+    });
+  }, [sections]);
+
   const listRef = useRef<SectionList<Food, GoodsSection>>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const programmaticUntil = useRef(0);
+  const pendingSection = useRef<number | null>(null);
+  const releaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 20,
@@ -67,7 +73,7 @@ export function GoodsScreen() {
 
   const onViewableItemsChanged = useRef(
     (info: { viewableItems: ViewToken[] }) => {
-      if (Date.now() < programmaticUntil.current) {
+      if (pendingSection.current !== null) {
         return;
       }
       const first = info.viewableItems.find(token => token.isViewable && token.section);
@@ -82,21 +88,32 @@ export function GoodsScreen() {
     },
   ).current;
 
+  const releasePending = useCallback(() => {
+    pendingSection.current = null;
+    if (releaseTimer.current) {
+      clearTimeout(releaseTimer.current);
+      releaseTimer.current = null;
+    }
+  }, []);
+
   const scrollToGroup = useCallback(
     (index: number) => {
       setActiveIndex(index);
-      programmaticUntil.current = Date.now() + 400;
+      pendingSection.current = index;
+      if (releaseTimer.current) {
+        clearTimeout(releaseTimer.current);
+      }
+      releaseTimer.current = setTimeout(releasePending, 1200);
       try {
-        listRef.current?.scrollToLocation({
-          sectionIndex: index,
-          itemIndex: 0,
-          animated: true,
-          viewPosition: 0,
-        });
+        const target = sectionOffsets[index];
+        if (target !== undefined) {
+          listRef.current?.getScrollResponder()?.scrollTo?.({ y: target, animated: true });
+        }
       } catch {
+        releasePending();
       }
     },
-    [],
+    [releasePending, sectionOffsets],
   );
 
   const openFood = useCallback(
@@ -136,11 +153,14 @@ export function GoodsScreen() {
             keyExtractor={item => item.id}
             stickySectionHeadersEnabled
             onViewableItemsChanged={onViewableItemsChanged}
+            onMomentumScrollEnd={releasePending}
             viewabilityConfig={viewabilityConfig}
             contentContainerStyle={{ paddingBottom: metrics.cartBarHeight + insets.bottom + space[12] }}
             renderSectionHeader={({ section }) => (
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>{section.title}</Text>
+              <View style={[styles.sectionHeader, { backgroundColor: theme.colors.surfaceVariant }]}>
+                <Text variant="labelLarge" style={{ color: theme.colors.onSurfaceVariant }}>
+                  {section.title}
+                </Text>
               </View>
             )}
             renderItem={({ item }) => <FoodRow food={item} onPress={openFood} />}
@@ -165,9 +185,5 @@ const styles = StyleSheet.create({
     height: metrics.sectionHeaderHeight,
     justifyContent: 'center',
     paddingLeft: space[14],
-    borderLeftWidth: borderWidth.thick,
-    borderLeftColor: colors.colLine,
-    backgroundColor: colors.backgroundSSSS,
   },
-  sectionTitle: { fontSize: fontSize.small, color: colors.grey },
 });

@@ -1,25 +1,19 @@
 import React, { useMemo } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, Divider, IconButton, Surface, Text, useTheme } from 'react-native-paper';
 import type { RootStackScreenProps } from '../../../app/navigation/types';
-import { colors, fontSize, lineHeight, fontWeight, space, radius, zIndex } from '../../../app/theme/tokens';
+import { space } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
-import { Split } from '../../../shared/ui/Split';
 import { CartControl } from '../../cart/components/CartControl';
 import { selectFoodCount, useCartStore } from '../../cart/store/cartStore';
 import { FoodRatingSection } from '../components/FoodRatingSection';
 import { useGoods } from '../hooks/useGoods';
 
 export function FoodDetailScreen({ route, navigation }: RootStackScreenProps<'FoodDetail'>) {
+  const theme = useTheme();
   const { sellerId, foodId } = route.params;
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
@@ -41,60 +35,71 @@ export function FoodDetailScreen({ route, navigation }: RootStackScreenProps<'Fo
   }
 
   return (
-    <View style={styles.root} testID="food-detail-screen">
+    <View style={[styles.root, { backgroundColor: theme.colors.background }]} testID="food-detail-screen">
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space[24] }}>
         <View style={{ width, height: width }}>
           <RemoteImage uri={food.image} width={width} height={width} />
-          <Pressable
-            onPress={() => navigation.goBack()}
-            style={[styles.back, { top: insets.top + space[6] }]}
-            hitSlop={space[12]}
-            accessibilityRole="button"
-            accessibilityLabel="Back"
-            testID="food-detail-back"
-          >
-            <Text style={styles.backIcon}>‹</Text>
-          </Pressable>
+          <Surface elevation={2} style={[styles.back, { top: insets.top + space[6] }]}>
+            <IconButton
+              icon="arrow-left"
+              size={22}
+              onPress={() => navigation.goBack()}
+              testID="food-detail-back"
+              accessibilityLabel="Back"
+            />
+          </Surface>
         </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>{food.name}</Text>
-          <View style={styles.detail}>
-            <Text style={styles.detailText}>{food.sellCount} sold</Text>
-            <Text style={styles.detailText}>{food.rating}% positive</Text>
-          </View>
+        <Surface elevation={0} style={styles.content}>
+          <Text variant="headlineSmall">{food.name}</Text>
+          <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, marginTop: space[4] }}>
+            {food.sellCount} sold · {food.rating}% positive
+          </Text>
           <View style={styles.priceRow}>
-            <Text style={styles.price}>¥{formatPrice(food.price)}</Text>
-            {food.oldPrice ? <Text style={styles.oldPrice}>¥{food.oldPrice}</Text> : null}
-          </View>
-
-          <View style={styles.control}>
-            <CartControl foodId={food.id} />
+            <Text variant="headlineSmall" style={{ color: theme.colors.error }}>
+              ¥{formatPrice(food.price)}
+            </Text>
+            {food.oldPrice ? (
+              <Text
+                variant="bodyMedium"
+                style={[styles.oldPrice, { color: theme.colors.onSurfaceVariant }]}
+              >
+                ¥{food.oldPrice}
+              </Text>
+            ) : null}
+            <View style={styles.control}>
+              <CartControl foodId={food.id} />
+            </View>
           </View>
 
           {count === 0 ? (
-            <Pressable
-              style={styles.buy}
+            <Button
+              mode="contained"
+              icon="cart-plus"
               onPress={() => addFood(food.id)}
-              accessibilityRole="button"
+              style={styles.buy}
+              contentStyle={styles.buyContent}
               testID="food-detail-buy"
             >
-              <Text style={styles.buyText}>Add to cart</Text>
-            </Pressable>
+              Add to cart
+            </Button>
           ) : null}
-        </View>
+        </Surface>
+
+        <Divider />
 
         {food.info ? (
           <>
-            <Split />
             <View style={styles.info}>
-              <Text style={styles.infoTitle}>Details</Text>
-              <Text style={styles.infoText}>{food.info}</Text>
+              <Text variant="titleMedium">Details</Text>
+              <Text variant="bodyMedium" style={[styles.infoText, { color: theme.colors.onSurfaceVariant }]}>
+                {food.info}
+              </Text>
             </View>
+            <Divider />
           </>
         ) : null}
 
-        <Split />
         <FoodRatingSection ratings={food.ratings} />
       </ScrollView>
     </View>
@@ -102,34 +107,14 @@ export function FoodDetailScreen({ route, navigation }: RootStackScreenProps<'Fo
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.white },
-  back: { position: 'absolute', left: space[0], paddingHorizontal: space[10], paddingVertical: space[6] },
-  backIcon: { fontSize: fontSize.display, color: colors.white, lineHeight: lineHeight.icon },
+  root: { flex: 1 },
+  back: { position: 'absolute', left: space[8], borderRadius: 24 },
   content: { paddingHorizontal: space[18], paddingVertical: space[18] },
-  title: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.darkGrey, marginBottom: space[8] },
-  detail: { flexDirection: 'row', marginBottom: space[18] },
-  detailText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: space[12] },
-  priceRow: { flexDirection: 'row', alignItems: 'baseline' },
-  price: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.red, marginRight: space[8] },
-  oldPrice: {
-    fontSize: fontSize.smallS,
-    color: colors.lightGrey,
-    textDecorationLine: 'line-through',
-  },
-  control: { position: 'absolute', right: space[12], bottom: space[12] },
-  buy: {
-    position: 'absolute',
-    right: space[18],
-    bottom: space[18],
-    zIndex: zIndex.raised,
-    height: space[24],
-    justifyContent: 'center',
-    paddingHorizontal: space[12],
-    borderRadius: radius.pill,
-    backgroundColor: colors.blue,
-  },
-  buyText: { fontSize: fontSize.smallS, color: colors.white },
+  priceRow: { flexDirection: 'row', alignItems: 'center', marginTop: space[8] },
+  oldPrice: { marginLeft: space[8], textDecorationLine: 'line-through' },
+  control: { marginLeft: 'auto' },
+  buy: { marginTop: space[16] },
+  buyContent: { height: 48 },
   info: { padding: space[18] },
-  infoTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[6] },
-  infoText: { fontSize: fontSize.small, lineHeight: lineHeight.relaxed, color: colors.grey, paddingHorizontal: space[8] },
+  infoText: { marginTop: space[8] },
 });

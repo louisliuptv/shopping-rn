@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, fontWeight, space, radius, zIndex, metrics } from '../../../app/theme/tokens';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Avatar, Button, Surface, Text, useTheme } from 'react-native-paper';
+import { colors, space, metrics } from '../../../app/theme/tokens';
 import { formatPrice, type CartSummary } from '../../../domain/usecases/cartUseCases';
 import { Bubble } from '../../../shared/ui/Bubble';
 import { useCartBall } from '../animation/CartBall';
-import { CartIcon } from './CartIcon';
 import { CartPanel } from './CartPanel';
 import { PayDialog } from './PayDialog';
 
@@ -15,6 +15,7 @@ interface CartBarProps {
 }
 
 export function CartBar({ summary, deliveryPrice, bottomInset }: CartBarProps) {
+  const theme = useTheme();
   const cartBall = useCartBall();
   const [panelOpen, setPanelOpen] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
@@ -40,40 +41,53 @@ export function CartBar({ summary, deliveryPrice, bottomInset }: CartBarProps) {
     setPayOpen(true);
   }, [summary.payEnabled]);
 
-  const barHeight = metrics.cartBarHeight + bottomInset;
 
   return (
     <>
-      <View style={[styles.bar, { paddingBottom: bottomInset }]} testID="cart-bar">
+      <Surface
+        style={[styles.bar, { paddingBottom: bottomInset, backgroundColor: theme.colors.surface }]}
+        elevation={3}
+        testID="cart-bar"
+      >
         <Pressable style={styles.left} onPress={togglePanel} accessibilityLabel="Cart details">
           <View style={styles.logoWrapper} ref={cartBall?.registerTarget}>
-            <View style={[styles.logo, highlighted && styles.logoHighlight]}>
-              <CartIcon color={highlighted ? colors.white : colors.lightGrey} />
-            </View>
+            <Avatar.Icon
+              size={metrics.cartLogoSize}
+              icon="cart-outline"
+              style={{ backgroundColor: highlighted ? theme.colors.primary : theme.colors.surfaceVariant }}
+              color={highlighted ? theme.colors.onPrimary : theme.colors.onSurfaceVariant}
+            />
             <View style={styles.badge}>
               <Bubble count={summary.totalCount} testID="cart-bar-badge" />
             </View>
           </View>
-          <Text style={[styles.price, highlighted && styles.priceHighlight]} testID="cart-bar-price">
-            ¥{formatPrice(summary.totalPrice)}
-          </Text>
-          <Text style={styles.desc}>Delivery ¥{formatPrice(deliveryPrice)}</Text>
+          <View style={styles.summary}>
+            <Text variant="titleMedium" testID="cart-bar-price">
+              ¥{formatPrice(summary.totalPrice)}
+            </Text>
+            <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>
+              Delivery ¥{formatPrice(deliveryPrice)}
+            </Text>
+          </View>
         </Pressable>
-        <Pressable
-          style={[styles.pay, summary.payEnabled ? styles.payEnabled : styles.payDisabled]}
+        <Button
+          mode="contained"
           onPress={onPay}
-          accessibilityRole="button"
+          disabled={!summary.payEnabled}
           testID="cart-bar-pay"
+          style={styles.pay}
+          contentStyle={styles.payContent}
+          buttonColor={colors.green}
         >
-          <Text style={styles.payText}>{summary.payDesc}</Text>
-        </Pressable>
-      </View>
+          {summary.payDesc}
+        </Button>
+      </Surface>
 
       <CartPanel
         visible={panelOpen}
         summary={summary}
         onClose={() => setPanelOpen(false)}
-        bottomOffset={barHeight}
+        bottomOffset={metrics.cartBarHeight}
       />
 
       <PayDialog
@@ -88,50 +102,16 @@ export function CartBar({ summary, deliveryPrice, bottomInset }: CartBarProps) {
 
 const styles = StyleSheet.create({
   bar: {
-    position: 'absolute',
-    left: space[0],
-    right: space[0],
-    bottom: space[0],
-    zIndex: zIndex.sticky,
+    minHeight: metrics.cartBarHeight,
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    backgroundColor: colors.background,
-    paddingTop: space[0],
-  },
-  left: { flex: 1, flexDirection: 'row', alignItems: 'flex-start' },
-  logoWrapper: {
-    marginTop: -metrics.cartLogoOverhang,
-    marginHorizontal: space[12],
-    padding: space[6],
-    width: metrics.cartLogoHitArea,
-    height: metrics.cartLogoHitArea,
-  },
-  logo: {
-    width: metrics.cartLogoSize,
-    height: metrics.cartLogoSize,
-    borderRadius: radius.pill,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.darkGrey,
+    justifyContent: 'space-between',
+    paddingLeft: space[8],
   },
-  logoHighlight: { backgroundColor: colors.blue },
-  badge: { position: 'absolute', top: space[0], right: space[0] },
-  price: {
-    marginTop: space[12],
-    marginRight: space[12],
-    fontSize: fontSize.large,
-    fontWeight: fontWeight.bold,
-    color: colors.lightGrey,
-  },
-  priceHighlight: { color: colors.white },
-  desc: { marginTop: space[14], fontSize: fontSize.smallS, color: colors.lightGrey },
-  pay: {
-    width: metrics.cartPayWidth,
-    height: metrics.cartBarHeight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  payDisabled: { backgroundColor: colors.darkGrey },
-  payEnabled: { backgroundColor: colors.green },
-  payText: { fontSize: fontSize.small, fontWeight: fontWeight.bold, color: colors.white },
+  left: { flex: 1, flexDirection: 'row', alignItems: 'center' },
+  logoWrapper: { padding: space[6] },
+  badge: { position: 'absolute', top: space[8], right: space[4] },
+  summary: { paddingLeft: space[4] },
+  pay: { marginRight: space[8] },
+  payContent: { height: metrics.cartBarHeight - space[12] },
 });

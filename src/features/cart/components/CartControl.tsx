@@ -1,15 +1,7 @@
 import React, { useCallback, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import {
-  colors,
-  fontSize,
-  lineHeight,
-  fontWeight,
-  space,
-  radius,
-  borderWidth,
-  metrics,
-} from '../../../app/theme/tokens';
+import { StyleSheet, View } from 'react-native';
+import { IconButton, Text, useTheme } from 'react-native-paper';
+import { space } from '../../../app/theme/tokens';
 import { useCartBall } from '../animation/CartBall';
 import { selectFoodCount, useCartStore } from '../store/cartStore';
 
@@ -19,6 +11,7 @@ interface CartControlProps {
 }
 
 export function CartControl({ foodId, testID }: CartControlProps) {
+  const theme = useTheme();
   const count = useCartStore(selectFoodCount(foodId));
   const add = useCartStore(state => state.add);
   const remove = useCartStore(state => state.remove);
@@ -36,58 +29,35 @@ export function CartControl({ foodId, testID }: CartControlProps) {
     <View style={styles.row} testID={testID}>
       {count > 0 ? (
         <>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Decrease quantity"
-            hitSlop={space[8]}
+          <IconButton
+            icon="minus"
+            size={16}
+            mode="contained-tonal"
             onPress={() => remove(foodId)}
             style={styles.button}
             testID={`cart-decrease-${foodId}`}
-          >
-            <Text style={styles.symbol}>−</Text>
-          </Pressable>
-          <Text style={styles.count} testID={`cart-count-${foodId}`}>
+            accessibilityLabel="Decrease quantity"
+          />
+          <Text variant="labelLarge" testID={`cart-count-${foodId}`} style={{ color: theme.colors.onSurfaceVariant }}>
             {count}
           </Text>
         </>
       ) : null}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Increase quantity"
-        hitSlop={space[8]}
+      <IconButton
+        ref={plusRef}
+        icon="plus"
+        size={16}
+        mode="contained"
         onPress={addWithBall}
         style={styles.button}
-        ref={plusRef}
         testID={`cart-increase-${foodId}`}
-      >
-        <Text style={styles.symbol}>+</Text>
-      </Pressable>
+        accessibilityLabel="Increase quantity"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  button: {
-    width: metrics.cartControlSize,
-    height: metrics.cartControlSize,
-    borderRadius: radius.pill,
-    borderWidth: borderWidth.thin,
-    borderColor: colors.blue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: space[0],
-  },
-  symbol: {
-    color: colors.blue,
-    fontSize: fontSize.large,
-    lineHeight: lineHeight.body,
-    fontWeight: fontWeight.semibold,
-  },
-  count: {
-    minWidth: metrics.cartControlMinWidth,
-    textAlign: 'center',
-    fontSize: fontSize.smallS,
-    color: colors.grey,
-  },
+  button: { margin: 0, marginHorizontal: space[2] },
 });

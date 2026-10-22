@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, space } from '../../../app/theme/tokens';
+import { StyleSheet, View } from 'react-native';
+import { Divider, Text } from 'react-native-paper';
+import { space } from '../../../app/theme/tokens';
 import { countRatings, filterRatings } from '../../../domain/usecases/ratingUseCases';
 import { useRatingFilter } from '../../ratings/hooks/useRatingFilter';
 import { RatingFilter } from '../../ratings/components/RatingFilter';
@@ -21,7 +22,9 @@ export function FoodRatingSection({ ratings }: FoodRatingSectionProps) {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>Reviews</Text>
+      <Text variant="titleMedium" style={styles.title}>
+        Reviews
+      </Text>
       <RatingFilter
         filter={filter}
         counts={counts}
@@ -29,6 +32,7 @@ export function FoodRatingSection({ ratings }: FoodRatingSectionProps) {
         onChangeFilter={setFilter}
         onToggleOnlyContent={toggleOnlyContent}
       />
+      <Divider />
       <View style={styles.wrapper}>
         {visible.length ? (
           visible.map((rating, index) => (
@@ -48,11 +52,6 @@ export function FoodRatingSection({ ratings }: FoodRatingSectionProps) {
 
 const styles = StyleSheet.create({
   root: { paddingTop: space[18] },
-  title: {
-    fontSize: fontSize.medium,
-    color: colors.darkGrey,
-    marginLeft: space[18],
-    marginBottom: space[4],
-  },
+  title: { marginLeft: space[18], marginBottom: space[4] },
   wrapper: { paddingHorizontal: space[18] },
 });

@@ -47,21 +47,6 @@ export const fontSize = {
   displayLarge: 34,
 } as const;
 
-export const lineHeight = {
-  tight: 14,
-  compact: 16,
-  body: 18,
-  relaxed: 24,
-  icon: 34,
-} as const;
-
-export const fontWeight = {
-  regular: '400',
-  medium: '500',
-  semibold: '600',
-  bold: '700',
-} as const;
-
 export const space = {
   0: 0,
   1: 1,
@@ -100,22 +85,11 @@ export const borderWidth = {
   thick: 2,
 } as const;
 
-export const zIndex = {
-  raised: 10,
-  sticky: 50,
-  overlay: 100,
-} as const;
-
 export const metrics = {
   cartBarHeight: 48,
-  cartPayWidth: 105,
   cartLogoSize: 44,
-  cartLogoHitArea: 56,
-  cartLogoOverhang: 10,
-  cartControlSize: 22,
-  cartControlMinWidth: 26,
   foodThumbSize: 57,
-  foodRowMinHeight: 57,
+  foodRowHeight: 114,
   categoryRailWidth: 80,
   categoryItemMinHeight: 56,
   sectionHeaderHeight: 26,
@@ -123,35 +97,15 @@ export const metrics = {
   sellerAvatarSize: 64,
   sellerPhotoWidth: 120,
   sellerPhotoHeight: 90,
-  sellerFavoriteWidth: 50,
-  sellerFavoriteInset: 11,
   ratingSummaryWidth: 137,
   ratingAvatarSize: 28,
   ratingAvatarSmallSize: 12,
   ratingStarSize: 24,
   sellerStarSize: 36,
-  bubbleMinWidth: 16,
   bubbleHeight: 16,
   splitHeight: 16,
   supportTagMinWidth: 12,
   tabBarHeight: 44,
-} as const;
-
-export const icons = {
-  cart: {
-    size: 20,
-    basketTop: 6,
-    basketLeft: 2,
-    basketWidth: 15,
-    basketHeight: 9,
-    handleTop: 3,
-    handleWidth: 5,
-    handleHeight: 2,
-    wheelSize: 3,
-    wheelBottom: 1,
-    wheelLeft: 4,
-    wheelRight: 13,
-  },
 } as const;
 
 export const starGlyphs = {

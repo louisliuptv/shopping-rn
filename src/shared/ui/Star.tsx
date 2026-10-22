@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontWeight, space, starGlyphs } from '../../app/theme/tokens';
+import { Icon, useTheme } from 'react-native-paper';
+import { colors, starGlyphs } from '../../app/theme/tokens';
 import { computeStarStates, STAR_TOTAL, type StarState } from '../../domain/usecases/starUseCases';
 
 export type StarSize = keyof typeof starGlyphs;
@@ -11,34 +12,35 @@ interface StarProps {
   testID?: string;
 }
 
+const SOURCE: Record<StarState, string> = {
+  on: 'star',
+  half: 'star-half-full',
+  off: 'star-outline',
+};
+
 export function Star({ score, size = 36, testID }: StarProps) {
+  const theme = useTheme();
   const states = computeStarStates(score);
   const { px, gap } = starGlyphs[size];
 
   return (
-    <View style={styles.row} testID={testID ?? `star-${score}`} accessible accessibilityLabel={`Rating ${score}`}>
+    <View
+      style={styles.row}
+      testID={testID ?? `star-${score}`}
+      accessible
+      accessibilityLabel={`Rating ${score}`}
+    >
       {states.map((state: StarState, index: number) => (
         <View
           key={index}
-          style={[
-            { width: px, height: px },
-            index === states.length - 1 ? null : { marginRight: gap },
-          ]}
+          testID={`star-glyph-${index}-${state}`}
+          style={[styles.slot, { width: px, height: px }, index === states.length - 1 ? null : { marginRight: gap }]}
         >
-          <Text style={[styles.glyph, { fontSize: px, lineHeight: px, color: colors.lightGreySSS }]}>★</Text>
-          {state !== 'off' ? (
-            <View
-              style={[
-                styles.overlay,
-                {
-                  width: state === 'on' ? px : px / 2,
-                  height: px,
-                },
-              ]}
-            >
-              <Text style={[styles.glyph, { fontSize: px, lineHeight: px, color: colors.gold }]}>★</Text>
-            </View>
-          ) : null}
+          <Icon
+            source={SOURCE[state]}
+            size={px}
+            color={state === 'off' ? theme.colors.outlineVariant : colors.gold}
+          />
         </View>
       ))}
       <View style={styles.a11yOnly}>
@@ -50,7 +52,6 @@ export function Star({ score, size = 36, testID }: StarProps) {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  glyph: { fontWeight: fontWeight.regular },
-  overlay: { position: 'absolute', top: space[0], left: space[0], overflow: 'hidden' },
-  a11yOnly: { width: space[0], height: space[0], opacity: 0 },
+  slot: { alignItems: 'center', justifyContent: 'center' },
+  a11yOnly: { width: 0, height: 0, opacity: 0 },
 });

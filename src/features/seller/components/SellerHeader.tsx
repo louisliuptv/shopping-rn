@@ -1,14 +1,8 @@
 import React, { useCallback } from 'react';
-import {
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { colors, fontSize, fontWeight, space, radius, metrics } from '../../../app/theme/tokens';
+import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Avatar, Icon, Surface, Text, useTheme } from 'react-native-paper';
+import { colors, space, metrics } from '../../../app/theme/tokens';
 import type { Seller } from '../../../domain/entities/shop';
-import { RemoteImage } from '../../../shared/ui/RemoteImage';
 import { SupportTag } from '../../../shared/ui/SupportTag';
 
 interface SellerHeaderProps {
@@ -17,12 +11,20 @@ interface SellerHeaderProps {
 }
 
 export function SellerHeader({ seller, onPress }: SellerHeaderProps) {
+  const theme = useTheme();
   const handlePress = useCallback(() => {
     onPress?.();
   }, [onPress]);
 
   if (!seller) {
-    return <View style={styles.loading} testID="seller-header-loading" />;
+    return (
+      <View
+        style={[styles.loading, { backgroundColor: theme.colors.inverseSurface }]}
+        testID="seller-header-loading"
+      >
+        <ActivityIndicator color={theme.colors.onPrimary} />
+      </View>
+    );
   }
 
   return (
@@ -32,112 +34,98 @@ export function SellerHeader({ seller, onPress }: SellerHeaderProps) {
         style={StyleSheet.absoluteFill}
         blurRadius={10}
       />
-      <View style={styles.scrim} />
+      <View style={[styles.scrim, { backgroundColor: theme.colors.scrim }]} />
 
       <View style={styles.contentWrapper}>
-        <RemoteImage
-          uri={seller.avatar}
-          width={metrics.sellerAvatarSize}
-          height={metrics.sellerAvatarSize}
-          borderRadius={radius.s}
-          style={styles.avatar}
-        />
+        <Avatar.Image size={metrics.sellerAvatarSize} source={{ uri: seller.avatar }} style={styles.avatar} />
         <View style={styles.content}>
           <View style={styles.titleRow}>
-            <View style={styles.brand}>
-              <Text style={styles.brandText}>BRAND</Text>
-            </View>
-            <Text style={styles.name} numberOfLines={1}>
+            <Surface elevation={0} style={styles.brand}>
+              <Text variant="labelSmall" style={styles.brandText}>
+                BRAND
+              </Text>
+            </Surface>
+            <Text variant="titleLarge" numberOfLines={1} style={styles.name}>
               {seller.name}
             </Text>
           </View>
-          <Text style={styles.description} numberOfLines={1}>
+          <Text variant="bodySmall" numberOfLines={1} style={styles.description}>
             {seller.description} · {seller.deliveryTime} min
           </Text>
           {seller.supports.length ? (
             <View style={styles.support}>
               <SupportTag support={seller.supports[0]} size={1} />
-              <Text style={styles.supportText} numberOfLines={1}>
+              <Text variant="bodySmall" numberOfLines={1} style={styles.supportText}>
                 {seller.supports[0].description}
               </Text>
             </View>
           ) : null}
         </View>
         {seller.supports.length ? (
-          <View style={styles.supportCount}>
-            <Text style={styles.supportCountText}>{seller.supports.length} offers</Text>
-            <Text style={styles.chevron}>›</Text>
-          </View>
+          <Surface elevation={1} style={styles.supportCount}>
+            <Text variant="labelSmall">{seller.supports.length} offers</Text>
+            <Icon source="chevron-down" size={16} />
+          </Surface>
         ) : null}
       </View>
 
       <View style={styles.bulletin}>
-        <View style={styles.bulletinBadge}>
-          <Text style={styles.bulletinBadgeText}>NOTICE</Text>
-        </View>
-        <Text style={styles.bulletinText} numberOfLines={1}>
+        <Surface elevation={0} style={styles.bulletinBadge}>
+          <Text variant="labelSmall" style={styles.bulletinBadgeText}>
+            NOTICE
+          </Text>
+        </Surface>
+        <Text variant="bodySmall" numberOfLines={1} style={styles.bulletinText}>
           {seller.bulletin}
         </Text>
-        <Text style={styles.chevron}>›</Text>
+        <Icon source="chevron-right" size={18} color={colors.white} />
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  loading: { height: metrics.sellerHeaderHeight, backgroundColor: colors.background },
-  root: { overflow: 'hidden', backgroundColor: colors.backgroundSS },
-  scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.backgroundSS },
+  loading: { height: metrics.sellerHeaderHeight, alignItems: 'center', justifyContent: 'center' },
+  root: { overflow: 'hidden' },
+  scrim: { ...StyleSheet.absoluteFillObject },
   contentWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: space[24],
-    paddingLeft: space[24],
+    paddingLeft: space[18],
     paddingRight: space[12],
     paddingBottom: space[18],
   },
   avatar: { marginRight: space[16] },
   content: { flex: 1 },
-  titleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: space[8] },
-  brand: {
-    paddingHorizontal: space[4],
-    paddingVertical: space[1],
-    borderRadius: radius.s,
-    backgroundColor: colors.red,
-    marginRight: space[6],
-  },
-  brandText: { fontSize: fontSize.smallS, color: colors.white, fontWeight: fontWeight.bold },
-  name: { flex: 1, fontSize: fontSize.large, fontWeight: fontWeight.bold, color: colors.white },
-  description: { fontSize: fontSize.small, color: colors.white, marginBottom: space[8] },
+  titleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: space[4] },
+  brand: { paddingHorizontal: space[4], paddingVertical: space[1], borderRadius: 4, marginRight: space[6] },
+  brandText: { color: colors.white, fontWeight: '700' },
+  name: { flex: 1, color: colors.white, fontWeight: '700' },
+  description: { color: colors.white, marginBottom: space[6] },
   support: { flexDirection: 'row', alignItems: 'center' },
-  supportText: { fontSize: fontSize.smallS, color: colors.white, marginLeft: space[4] },
+  supportText: { color: colors.white, marginLeft: space[4], flex: 1 },
   supportCount: {
-    position: 'absolute',
-    right: space[12],
-    bottom: space[14],
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: space[8],
-    height: space[24],
-    borderRadius: radius.pill,
-    backgroundColor: colors.backgroundSSS,
+    paddingHorizontal: space[10],
+    height: space[28],
+    borderRadius: 14,
   },
-  supportCountText: { fontSize: fontSize.smallS, color: colors.white },
-  chevron: { fontSize: fontSize.smallS, color: colors.white, marginLeft: space[2] },
   bulletin: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: space[28],
-    paddingHorizontal: space[8],
-    backgroundColor: colors.backgroundSSS,
+    height: space[32],
+    paddingHorizontal: space[12],
+    backgroundColor: 'rgba(7, 17, 27, 0.35)',
   },
   bulletinBadge: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.white,
-    borderRadius: radius.s,
-    paddingHorizontal: space[3],
+    borderRadius: 2,
+    paddingHorizontal: space[4],
+    paddingVertical: space[1],
     marginRight: space[6],
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
-  bulletinBadgeText: { fontSize: fontSize.micro, color: colors.white },
-  bulletinText: { flex: 1, fontSize: fontSize.smallS, color: colors.white },
+  bulletinBadgeText: { color: colors.white },
+  bulletinText: { flex: 1, color: colors.white },
 });

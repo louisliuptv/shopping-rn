@@ -78,15 +78,15 @@ describe('repositories', () => {
       getGoods: () => Promise.reject(new Error('offline')),
       getRatings: () => Promise.reject(new Error('offline')),
     };
-    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const info = jest.spyOn(console, 'info').mockImplementation(() => {});
 
     const repository = new FallbackShopRepository(failing, new FixtureShopRepository());
     const goods = await repository.getGoods('1');
 
     expect(goods.length).toBeGreaterThan(0);
     expect(goods[0].foods.length).toBeGreaterThan(0);
-    expect(warn).toHaveBeenCalled();
-    warn.mockRestore();
+    expect(info).toHaveBeenCalled();
+    info.mockRestore();
   });
 
   it('propagates errors when the fallback is disabled', async () => {

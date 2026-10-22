@@ -1,11 +1,13 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { PaperProvider } from 'react-native-paper';
 import { Bubble } from '../src/shared/ui/Bubble';
 import { Star } from '../src/shared/ui/Star';
 import { CartBar } from '../src/features/cart/components/CartBar';
 import { CartControl } from '../src/features/cart/components/CartControl';
 import { useCartStore } from '../src/features/cart/store/cartStore';
 import { RatingFilter } from '../src/features/ratings/components/RatingFilter';
+import { paperTheme } from '../src/app/theme/paperTheme';
 import type { CartSummary } from '../src/domain/usecases/cartUseCases';
 
 const summary = (overrides: Partial<CartSummary> = {}): CartSummary => ({
@@ -17,29 +19,39 @@ const summary = (overrides: Partial<CartSummary> = {}): CartSummary => ({
   ...overrides,
 });
 
+const renderWithPaper = (ui: React.ReactElement) =>
+  render(<PaperProvider theme={paperTheme}>{ui}</PaperProvider>);
+
 describe('Star', () => {
-  it('draws five glyphs for whole stars', () => {
-    render(<Star score={3} size={24} />);
-    expect(screen.getAllByText('★')).toHaveLength(8);
+  it('draws five icons with whole stars filled', () => {
+    renderWithPaper(<Star score={3} size={24} />);
+    expect(screen.getAllByTestId(/^star-glyph-/)).toHaveLength(5);
+    expect(screen.getAllByTestId(/^star-glyph-\d-on$/)).toHaveLength(3);
+    expect(screen.getAllByTestId(/^star-glyph-\d-off$/)).toHaveLength(2);
   });
 
-  it('draws an extra clipped glyph for the half star', () => {
-    render(<Star score={4.5} size={36} />);
-    expect(screen.getAllByText('★')).toHaveLength(10);
+  it('draws a half icon when the score has a half star', () => {
+    renderWithPaper(<Star score={4.5} size={36} />);
+    expect(screen.getAllByTestId(/^star-glyph-/)).toHaveLength(5);
+    expect(screen.getAllByTestId(/^star-glyph-\d-half$/)).toHaveLength(1);
   });
 });
 
 describe('Bubble', () => {
   it('renders nothing at zero', () => {
-    render(<Bubble count={0} testID="bubble" />);
+    renderWithPaper(<Bubble count={0} testID="bubble" />);
     expect(screen.queryByTestId('bubble')).toBeNull();
   });
 
   it('renders the count and caps at 99+', () => {
-    const { rerender } = render(<Bubble count={7} testID="bubble" />);
+    const { rerender } = renderWithPaper(<Bubble count={7} testID="bubble" />);
     expect(screen.getByText('7')).toBeTruthy();
 
-    rerender(<Bubble count={150} testID="bubble" />);
+    rerender(
+      <PaperProvider theme={paperTheme}>
+        <Bubble count={150} testID="bubble" />
+      </PaperProvider>,
+    );
     expect(screen.getByText('99+')).toBeTruthy();
   });
 });
@@ -49,7 +61,7 @@ describe('RatingFilter', () => {
 
   it('reports the selected tab', () => {
     const onChangeFilter = jest.fn();
-    render(
+    renderWithPaper(
       <RatingFilter
         filter="all"
         counts={counts}
@@ -65,7 +77,7 @@ describe('RatingFilter', () => {
 
   it('toggles the "only with content" switch', () => {
     const onToggleOnlyContent = jest.fn();
-    render(
+    renderWithPaper(
       <RatingFilter
         filter="all"
         counts={counts}
@@ -86,7 +98,7 @@ describe('CartControl', () => {
   });
 
   it('increments and decrements through the store', () => {
-    render(<CartControl foodId="g0-f0" />);
+    renderWithPaper(<CartControl foodId="g0-f0" />);
 
     expect(screen.queryByTestId('cart-count-g0-f0')).toBeNull();
 
@@ -105,17 +117,15 @@ describe('CartBar', () => {
   });
 
   it('shows the min-order hint and blocks payment when empty', () => {
-    const onPay = jest.fn();
-    render(<CartBar summary={summary()} deliveryPrice={4} bottomInset={0} />);
+    renderWithPaper(<CartBar summary={summary()} deliveryPrice={4} bottomInset={0} />);
 
     expect(screen.getByText('¥20 min order')).toBeTruthy();
     fireEvent.press(screen.getByTestId('cart-bar-pay'));
-    expect(onPay).not.toHaveBeenCalled();
     expect(screen.queryByText('You need to pay ¥20')).toBeNull();
   });
 
   it('opens the payment dialog once the min order price is reached', () => {
-    render(
+    renderWithPaper(
       <CartBar
         summary={summary({
           totalCount: 2,

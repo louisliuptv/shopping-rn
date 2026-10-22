@@ -41,7 +41,7 @@ export class FallbackShopRepository implements ShopRepository {
         throw error;
       }
       if (__DEV__) {
-        console.warn(
+        console.info(
           '[shop] remote request failed, using bundled fixture.',
           error instanceof Error ? error.message : error,
         );
