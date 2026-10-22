@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, lineHeight, space, metrics } from '../../../app/theme/tokens';
 import type { GoodsGroup } from '../../../domain/entities/shop';
 import { Bubble } from '../../../shared/ui/Bubble';
 import { SupportTag } from '../../../shared/ui/SupportTag';
@@ -50,20 +50,20 @@ export function CategoryNav({ groups, countsByGroup, activeIndex, onSelect }: Ca
 
 const styles = StyleSheet.create({
   rail: {
-    width: 80,
+    width: metrics.categoryRailWidth,
     backgroundColor: colors.backgroundSSSS,
   },
   item: {
-    minHeight: 56,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    minHeight: metrics.categoryItemMinHeight,
+    paddingHorizontal: space[10],
+    paddingVertical: space[8],
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.backgroundSSSS,
   },
   itemActive: { backgroundColor: colors.white },
   labelRow: { flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
-  label: { fontSize: fontSize.small, lineHeight: 14, color: colors.grey },
+  label: { fontSize: fontSize.small, lineHeight: lineHeight.tight, color: colors.grey },
   labelActive: { color: colors.darkGrey },
-  count: { position: 'absolute', right: 2, top: 2 },
+  count: { position: 'absolute', right: space[2], top: space[2] },
 });

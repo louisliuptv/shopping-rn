@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { appConfig } from '../../../app/config/appConfig';
-import { colors } from '../../../app/theme/tokens';
+import { colors, space } from '../../../app/theme/tokens';
 import { countRatings, filterRatings } from '../../../domain/usecases/ratingUseCases';
 import { EmptyState, ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
 import { Split } from '../../../shared/ui/Split';
@@ -69,5 +69,5 @@ export function RatingsScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
-  content: { paddingHorizontal: 18 },
+  content: { paddingHorizontal: space[18] },
 });

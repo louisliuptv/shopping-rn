@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RootStackScreenProps } from '../../../app/navigation/types';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, lineHeight, fontWeight, space, radius, zIndex } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
@@ -42,13 +42,13 @@ export function FoodDetailScreen({ route, navigation }: RootStackScreenProps<'Fo
 
   return (
     <View style={styles.root} testID="food-detail-screen">
-      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space[24] }}>
         <View style={{ width, height: width }}>
           <RemoteImage uri={food.image} width={width} height={width} />
           <Pressable
             onPress={() => navigation.goBack()}
-            style={[styles.back, { top: insets.top + 6 }]}
-            hitSlop={12}
+            style={[styles.back, { top: insets.top + space[6] }]}
+            hitSlop={space[12]}
             accessibilityRole="button"
             accessibilityLabel="Back"
             testID="food-detail-back"
@@ -103,33 +103,33 @@ export function FoodDetailScreen({ route, navigation }: RootStackScreenProps<'Fo
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
-  back: { position: 'absolute', left: 0, paddingHorizontal: 10, paddingVertical: 6 },
-  backIcon: { fontSize: 30, color: colors.white, lineHeight: 34 },
-  content: { paddingHorizontal: 18, paddingVertical: 18 },
-  title: { fontSize: fontSize.medium, fontWeight: '700', color: colors.darkGrey, marginBottom: 8 },
-  detail: { flexDirection: 'row', marginBottom: 18 },
-  detailText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: 12 },
+  back: { position: 'absolute', left: space[0], paddingHorizontal: space[10], paddingVertical: space[6] },
+  backIcon: { fontSize: fontSize.display, color: colors.white, lineHeight: lineHeight.icon },
+  content: { paddingHorizontal: space[18], paddingVertical: space[18] },
+  title: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.darkGrey, marginBottom: space[8] },
+  detail: { flexDirection: 'row', marginBottom: space[18] },
+  detailText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: space[12] },
   priceRow: { flexDirection: 'row', alignItems: 'baseline' },
-  price: { fontSize: fontSize.medium, fontWeight: '700', color: colors.red, marginRight: 8 },
+  price: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.red, marginRight: space[8] },
   oldPrice: {
     fontSize: fontSize.smallS,
     color: colors.lightGrey,
     textDecorationLine: 'line-through',
   },
-  control: { position: 'absolute', right: 12, bottom: 12 },
+  control: { position: 'absolute', right: space[12], bottom: space[12] },
   buy: {
     position: 'absolute',
-    right: 18,
-    bottom: 18,
-    zIndex: 10,
-    height: 24,
+    right: space[18],
+    bottom: space[18],
+    zIndex: zIndex.raised,
+    height: space[24],
     justifyContent: 'center',
-    paddingHorizontal: 12,
-    borderRadius: 12,
+    paddingHorizontal: space[12],
+    borderRadius: radius.pill,
     backgroundColor: colors.blue,
   },
   buyText: { fontSize: fontSize.smallS, color: colors.white },
-  info: { padding: 18 },
-  infoTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: 6 },
-  infoText: { fontSize: fontSize.small, lineHeight: 24, color: colors.grey, paddingHorizontal: 8 },
+  info: { padding: space[18] },
+  infoTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[6] },
+  infoText: { fontSize: fontSize.small, lineHeight: lineHeight.relaxed, color: colors.grey, paddingHorizontal: space[8] },
 });

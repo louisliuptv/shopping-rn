@@ -1,15 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../../app/theme/tokens';
+import { colors, fontWeight, space, starGlyphs } from '../../app/theme/tokens';
 import { computeStarStates, STAR_TOTAL, type StarState } from '../../domain/usecases/starUseCases';
 
-const SIZES = {
-  24: { px: 10, gap: 3 },
-  36: { px: 15, gap: 6 },
-  48: { px: 20, gap: 22 },
-} as const;
-
-export type StarSize = keyof typeof SIZES;
+export type StarSize = keyof typeof starGlyphs;
 
 interface StarProps {
   score: number;
@@ -19,7 +13,7 @@ interface StarProps {
 
 export function Star({ score, size = 36, testID }: StarProps) {
   const states = computeStarStates(score);
-  const { px, gap } = SIZES[size];
+  const { px, gap } = starGlyphs[size];
 
   return (
     <View style={styles.row} testID={testID ?? `star-${score}`} accessible accessibilityLabel={`Rating ${score}`}>
@@ -56,7 +50,7 @@ export function Star({ score, size = 36, testID }: StarProps) {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
-  glyph: { fontWeight: '400' },
-  overlay: { position: 'absolute', top: 0, left: 0, overflow: 'hidden' },
-  a11yOnly: { width: 0, height: 0, opacity: 0 },
+  glyph: { fontWeight: fontWeight.regular },
+  overlay: { position: 'absolute', top: space[0], left: space[0], overflow: 'hidden' },
+  a11yOnly: { width: space[0], height: space[0], opacity: 0 },
 });

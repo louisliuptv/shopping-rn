@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appConfig } from '../../../app/config/appConfig';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, lineHeight, space, radius, metrics } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
@@ -33,12 +33,12 @@ export function SellerScreen() {
     <ScrollView
       style={styles.root}
       testID="seller-screen"
-      contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+      contentContainerStyle={{ paddingBottom: insets.bottom + space[24] }}
     >
       <View style={styles.overview}>
         <Text style={styles.title}>{seller.name}</Text>
         <View style={styles.desc}>
-          <Star score={seller.score} size={36} />
+          <Star score={seller.score} size={metrics.sellerStarSize} />
           <Text style={styles.descText}>({seller.ratingCount})</Text>
           <Text style={styles.descText}>{seller.sellCount} orders</Text>
         </View>
@@ -97,8 +97,8 @@ export function SellerScreen() {
             <RemoteImage
               key={`${pic}-${index}`}
               uri={pic}
-              width={120}
-              height={90}
+              width={metrics.sellerPhotoWidth}
+              height={metrics.sellerPhotoHeight}
               style={styles.pic}
             />
           ))}
@@ -121,64 +121,64 @@ export function SellerScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
-  overview: { padding: 18 },
-  title: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: 8 },
+  overview: { padding: space[18] },
+  title: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
   desc: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 18,
+    paddingBottom: space[18],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
-  descText: { fontSize: fontSize.smallS, color: colors.grey, marginLeft: 8 },
-  remark: { flexDirection: 'row', paddingTop: 18 },
+  descText: { fontSize: fontSize.smallS, color: colors.grey, marginLeft: space[8] },
+  remark: { flexDirection: 'row', paddingTop: space[18] },
   block: { flex: 1, alignItems: 'center' },
   blockDivider: {
     borderRightWidth: StyleSheet.hairlineWidth,
     borderColor: colors.colLine,
   },
-  blockTitle: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: 4 },
+  blockTitle: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: space[4] },
   blockContent: { fontSize: fontSize.smallS, color: colors.darkGrey },
   stress: { fontSize: fontSize.largeXXX, color: colors.darkGrey },
   favorite: {
     position: 'absolute',
-    right: 11,
-    top: 18,
-    width: 50,
+    right: metrics.sellerFavoriteInset,
+    top: space[18],
+    width: metrics.sellerFavoriteWidth,
     alignItems: 'center',
   },
-  favoriteIcon: { fontSize: fontSize.largeXXX, color: colors.lightGreyS, marginBottom: 4 },
+  favoriteIcon: { fontSize: fontSize.largeXXX, color: colors.lightGreyS, marginBottom: space[4] },
   favoriteIconActive: { color: colors.red },
   favoriteText: { fontSize: fontSize.smallS, color: colors.grey },
-  bulletin: { paddingHorizontal: 18, paddingTop: 18 },
-  sectionTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: 8 },
+  bulletin: { paddingHorizontal: space[18], paddingTop: space[18] },
+  sectionTitle: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
   bulletinText: {
     fontSize: fontSize.small,
-    lineHeight: 24,
+    lineHeight: lineHeight.relaxed,
     color: colors.red,
-    paddingHorizontal: 12,
-    paddingBottom: 16,
+    paddingHorizontal: space[12],
+    paddingBottom: space[16],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
   supportItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingVertical: space[16],
+    paddingHorizontal: space[12],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
-  supportText: { fontSize: fontSize.small, color: colors.darkGrey, marginLeft: 6 },
-  pics: { padding: 18 },
-  pic: { marginRight: 6, borderRadius: 2 },
-  info: { paddingHorizontal: 18, paddingTop: 18 },
+  supportText: { fontSize: fontSize.small, color: colors.darkGrey, marginLeft: space[6] },
+  pics: { padding: space[18] },
+  pic: { marginRight: space[6], borderRadius: radius.s },
+  info: { paddingHorizontal: space[18], paddingTop: space[18] },
   infoItem: {
     fontSize: fontSize.small,
-    lineHeight: 16,
+    lineHeight: lineHeight.compact,
     color: colors.darkGrey,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
+    paddingVertical: space[16],
+    paddingHorizontal: space[12],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },

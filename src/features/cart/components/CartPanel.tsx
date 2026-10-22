@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius } from '../../../app/theme/tokens';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import type { CartSummary } from '../../../domain/usecases/cartUseCases';
 import { CartControl } from './CartControl';
@@ -31,7 +31,7 @@ export function CartPanel({ visible, summary, onClose, bottomOffset }: CartPanel
         <View style={[styles.panel, { paddingBottom: bottomOffset }]}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Cart</Text>
-            <Pressable onPress={onClose} hitSlop={8}>
+            <Pressable onPress={onClose} hitSlop={space[8]}>
               <Text style={styles.clear}>Close</Text>
             </Pressable>
           </View>
@@ -65,38 +65,38 @@ const styles = StyleSheet.create({
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.backgroundSS },
   panel: {
     backgroundColor: colors.white,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
+    borderTopLeftRadius: radius.m,
+    borderTopRightRadius: radius.m,
     maxHeight: '60%',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+    paddingHorizontal: space[18],
+    paddingVertical: space[12],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
-  headerText: { fontSize: fontSize.medium, color: colors.darkGrey, fontWeight: '600' },
+  headerText: { fontSize: fontSize.medium, color: colors.darkGrey, fontWeight: fontWeight.semibold },
   clear: { fontSize: fontSize.small, color: colors.blue },
   list: { flexGrow: 0 },
   separator: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: colors.rowLine,
-    marginLeft: 18,
+    marginLeft: space[18],
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+    paddingHorizontal: space[18],
+    paddingVertical: space[12],
   },
-  name: { flex: 1, fontSize: fontSize.medium, color: colors.darkGrey, marginRight: 8 },
+  name: { flex: 1, fontSize: fontSize.medium, color: colors.darkGrey, marginRight: space[8] },
   price: {
     fontSize: fontSize.medium,
     color: colors.red,
-    fontWeight: '700',
-    marginRight: 12,
+    fontWeight: fontWeight.bold,
+    marginRight: space[12],
   },
 });

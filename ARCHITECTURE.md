@@ -79,6 +79,26 @@ Mapping from the web app:
   Merchant tab (`navigation.navigate('Main', { screen: 'Seller' })`); no duplicated screen.
 - Seller id came from the URL (`?id=1`) → `app/config/appConfig.ts` (deep-linkable later).
 
+## Design tokens
+
+`src/app/theme/tokens.ts` is the single source of visual truth. Components import
+token scales instead of writing px literals, so the port stays consistent and a
+theme change is a one-file change.
+
+Why a hand-rolled token layer instead of a styling library:
+
+- **No runtime.** Plain exported objects — no provider, no context re-renders, no
+  extra dependency, and plain Jest snapshots.
+- **Pixel-faithful port.** The Vue app hardcoded px in every component. The `space`
+  scale is keyed by pixel value on a 2px rhythm (`space[18]`), so the RN layout
+  matches the original exactly instead of being rounded onto a 4/8pt grid.
+- **Semantic separation.** `metrics` names structural sizes (cart bar, food thumb,
+  category rail, seller header), `icons` and `starGlyphs` keep illustration
+  geometry out of layout code, and `motion` holds the drop-ball timing.
+- **One axis to change.** Typography (`fontSize`, `lineHeight`, `fontWeight`),
+  spacing, radii, borders, z-index and palette are independent scales; adding
+  dark mode later means swapping the token object, not editing 28 files.
+
 ## Deliberate deviations from the Vue UI
 
 | Vue | RN | Reason |

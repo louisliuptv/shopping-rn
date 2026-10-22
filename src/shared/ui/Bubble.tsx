@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius, metrics } from '../../app/theme/tokens';
 
 export function Bubble({ count, testID }: { count: number; testID?: string }) {
   if (!count) {
@@ -17,10 +17,10 @@ export function Bubble({ count, testID }: { count: number; testID?: string }) {
 
 const styles = StyleSheet.create({
   bubble: {
-    minWidth: 16,
-    height: 16,
-    paddingHorizontal: 5,
-    borderRadius: 8,
+    minWidth: metrics.bubbleMinWidth,
+    height: metrics.bubbleHeight,
+    paddingHorizontal: space[5],
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.red,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   text: {
     color: colors.white,
     fontSize: fontSize.smallS,
-    fontWeight: '700',
+    fontWeight: fontWeight.bold,
     fontFamily: 'Helvetica',
   },
 });

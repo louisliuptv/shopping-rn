@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, space, radius, borderWidth } from '../../../app/theme/tokens';
 import type { RatingFilter as RatingFilterValue } from '../../../domain/entities/shop';
 import type { RatingCounts } from '../../../domain/usecases/ratingUseCases';
 
@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
   root: { backgroundColor: colors.white },
   types: {
     flexDirection: 'row',
-    paddingVertical: 18,
-    marginHorizontal: 18,
+    paddingVertical: space[18],
+    marginHorizontal: space[18],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
   block: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 1,
-    marginRight: 8,
+    paddingHorizontal: space[12],
+    paddingVertical: space[8],
+    borderRadius: radius.xs,
+    marginRight: space[8],
   },
   blockPositive: { backgroundColor: colors.lightBlue },
   blockPositiveActive: { backgroundColor: colors.blue },
@@ -95,23 +95,23 @@ const styles = StyleSheet.create({
   switch: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 18,
-    paddingVertical: 12,
+    paddingHorizontal: space[18],
+    paddingVertical: space[12],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
   checkbox: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 1,
+    width: space[18],
+    height: space[18],
+    borderRadius: radius.pill,
+    borderWidth: borderWidth.thin,
     borderColor: colors.lightGrey,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 6,
+    marginRight: space[6],
   },
   checkboxOn: { borderColor: colors.green, backgroundColor: colors.green },
-  checkboxMark: { fontSize: 11, color: 'transparent' },
+  checkboxMark: { fontSize: fontSize.label, color: 'transparent' },
   checkboxMarkOn: { color: colors.white },
   switchText: { fontSize: fontSize.small, color: colors.lightGrey },
 });

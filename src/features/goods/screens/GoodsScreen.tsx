@@ -11,7 +11,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { appConfig } from '../../../app/config/appConfig';
 import type { RootStackParamList } from '../../../app/navigation/types';
-import { CART_BAR_HEIGHT, colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, space, borderWidth, metrics } from '../../../app/theme/tokens';
 import type { Food } from '../../../domain/entities/shop';
 import { countByGroup } from '../../../domain/usecases/cartUseCases';
 import { ErrorState, LoadingState } from '../../../shared/ui/AsyncState';
@@ -137,7 +137,7 @@ export function GoodsScreen() {
             stickySectionHeadersEnabled
             onViewableItemsChanged={onViewableItemsChanged}
             viewabilityConfig={viewabilityConfig}
-            contentContainerStyle={{ paddingBottom: CART_BAR_HEIGHT + insets.bottom + 12 }}
+            contentContainerStyle={{ paddingBottom: metrics.cartBarHeight + insets.bottom + space[12] }}
             renderSectionHeader={({ section }) => (
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>{section.title}</Text>
@@ -162,10 +162,10 @@ const styles = StyleSheet.create({
   body: { flex: 1, flexDirection: 'row' },
   list: { flex: 1, backgroundColor: colors.white },
   sectionHeader: {
-    height: 26,
+    height: metrics.sectionHeaderHeight,
     justifyContent: 'center',
-    paddingLeft: 14,
-    borderLeftWidth: 2,
+    paddingLeft: space[14],
+    borderLeftWidth: borderWidth.thick,
     borderLeftColor: colors.colLine,
     backgroundColor: colors.backgroundSSSS,
   },

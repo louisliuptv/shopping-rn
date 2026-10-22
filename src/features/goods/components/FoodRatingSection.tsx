@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, space } from '../../../app/theme/tokens';
 import { countRatings, filterRatings } from '../../../domain/usecases/ratingUseCases';
 import { useRatingFilter } from '../../ratings/hooks/useRatingFilter';
 import { RatingFilter } from '../../ratings/components/RatingFilter';
@@ -47,12 +47,12 @@ export function FoodRatingSection({ ratings }: FoodRatingSectionProps) {
 }
 
 const styles = StyleSheet.create({
-  root: { paddingTop: 18 },
+  root: { paddingTop: space[18] },
   title: {
     fontSize: fontSize.medium,
     color: colors.darkGrey,
-    marginLeft: 18,
-    marginBottom: 4,
+    marginLeft: space[18],
+    marginBottom: space[4],
   },
-  wrapper: { paddingHorizontal: 18 },
+  wrapper: { paddingHorizontal: space[18] },
 });

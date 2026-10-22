@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { icons, space, radius, borderWidth } from '../../../app/theme/tokens';
 
 export function CartIcon({ color }: { color: string }) {
   return (
@@ -13,32 +14,32 @@ export function CartIcon({ color }: { color: string }) {
 }
 
 const styles = StyleSheet.create({
-  box: { width: 20, height: 20 },
+  box: { width: icons.cart.size, height: icons.cart.size },
   basket: {
     position: 'absolute',
-    top: 6,
-    left: 2,
-    width: 15,
-    height: 9,
-    borderWidth: 1.5,
-    borderRadius: 2,
+    top: icons.cart.basketTop,
+    left: icons.cart.basketLeft,
+    width: icons.cart.basketWidth,
+    height: icons.cart.basketHeight,
+    borderWidth: borderWidth.medium,
+    borderRadius: radius.s,
   },
   handle: {
     position: 'absolute',
-    top: 3,
-    left: 0,
-    width: 5,
-    height: 2,
-    borderRadius: 1,
+    top: icons.cart.handleTop,
+    left: space[0],
+    width: icons.cart.handleWidth,
+    height: icons.cart.handleHeight,
+    borderRadius: radius.xs,
     transform: [{ rotate: '-18deg' }],
   },
   wheel: {
     position: 'absolute',
-    bottom: 1,
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
+    bottom: icons.cart.wheelBottom,
+    width: icons.cart.wheelSize,
+    height: icons.cart.wheelSize,
+    borderRadius: radius.pill,
   },
-  wheelLeft: { left: 4 },
-  wheelRight: { left: 13 },
+  wheelLeft: { left: icons.cart.wheelLeft },
+  wheelRight: { left: icons.cart.wheelRight },
 });

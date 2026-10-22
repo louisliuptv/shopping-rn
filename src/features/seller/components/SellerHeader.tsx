@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius, metrics } from '../../../app/theme/tokens';
 import type { Seller } from '../../../domain/entities/shop';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
 import { SupportTag } from '../../../shared/ui/SupportTag';
@@ -35,7 +35,13 @@ export function SellerHeader({ seller, onPress }: SellerHeaderProps) {
       <View style={styles.scrim} />
 
       <View style={styles.contentWrapper}>
-        <RemoteImage uri={seller.avatar} width={64} height={64} borderRadius={2} style={styles.avatar} />
+        <RemoteImage
+          uri={seller.avatar}
+          width={metrics.sellerAvatarSize}
+          height={metrics.sellerAvatarSize}
+          borderRadius={radius.s}
+          style={styles.avatar}
+        />
         <View style={styles.content}>
           <View style={styles.titleRow}>
             <View style={styles.brand}>
@@ -79,59 +85,59 @@ export function SellerHeader({ seller, onPress }: SellerHeaderProps) {
 }
 
 const styles = StyleSheet.create({
-  loading: { height: 136, backgroundColor: colors.background },
+  loading: { height: metrics.sellerHeaderHeight, backgroundColor: colors.background },
   root: { overflow: 'hidden', backgroundColor: colors.backgroundSS },
   scrim: { ...StyleSheet.absoluteFillObject, backgroundColor: colors.backgroundSS },
   contentWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 24,
-    paddingLeft: 24,
-    paddingRight: 12,
-    paddingBottom: 18,
+    paddingTop: space[24],
+    paddingLeft: space[24],
+    paddingRight: space[12],
+    paddingBottom: space[18],
   },
-  avatar: { marginRight: 16 },
+  avatar: { marginRight: space[16] },
   content: { flex: 1 },
-  titleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', marginBottom: space[8] },
   brand: {
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 2,
+    paddingHorizontal: space[4],
+    paddingVertical: space[1],
+    borderRadius: radius.s,
     backgroundColor: colors.red,
-    marginRight: 6,
+    marginRight: space[6],
   },
-  brandText: { fontSize: fontSize.smallS, color: colors.white, fontWeight: '700' },
-  name: { flex: 1, fontSize: fontSize.large, fontWeight: 'bold', color: colors.white },
-  description: { fontSize: fontSize.small, color: colors.white, marginBottom: 8 },
+  brandText: { fontSize: fontSize.smallS, color: colors.white, fontWeight: fontWeight.bold },
+  name: { flex: 1, fontSize: fontSize.large, fontWeight: fontWeight.bold, color: colors.white },
+  description: { fontSize: fontSize.small, color: colors.white, marginBottom: space[8] },
   support: { flexDirection: 'row', alignItems: 'center' },
-  supportText: { fontSize: fontSize.smallS, color: colors.white, marginLeft: 4 },
+  supportText: { fontSize: fontSize.smallS, color: colors.white, marginLeft: space[4] },
   supportCount: {
     position: 'absolute',
-    right: 12,
-    bottom: 14,
+    right: space[12],
+    bottom: space[14],
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
-    height: 24,
-    borderRadius: 14,
+    paddingHorizontal: space[8],
+    height: space[24],
+    borderRadius: radius.pill,
     backgroundColor: colors.backgroundSSS,
   },
   supportCountText: { fontSize: fontSize.smallS, color: colors.white },
-  chevron: { fontSize: fontSize.smallS, color: colors.white, marginLeft: 2 },
+  chevron: { fontSize: fontSize.smallS, color: colors.white, marginLeft: space[2] },
   bulletin: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 28,
-    paddingHorizontal: 8,
+    height: space[28],
+    paddingHorizontal: space[8],
     backgroundColor: colors.backgroundSSS,
   },
   bulletinBadge: {
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.white,
-    borderRadius: 2,
-    paddingHorizontal: 3,
-    marginRight: 6,
+    borderRadius: radius.s,
+    paddingHorizontal: space[3],
+    marginRight: space[6],
   },
-  bulletinBadgeText: { fontSize: 9, color: colors.white },
+  bulletinBadgeText: { fontSize: fontSize.micro, color: colors.white },
   bulletinText: { flex: 1, fontSize: fontSize.smallS, color: colors.white },
 });

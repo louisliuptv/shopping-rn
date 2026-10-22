@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../app/theme/tokens';
+import { colors, fontSize, space, radius, borderWidth } from '../../app/theme/tokens';
 
 export function LoadingState({ label = 'Loading…' }: { label?: string }) {
   return (
@@ -39,20 +39,20 @@ export function EmptyState({ message }: { message: string }) {
 }
 
 const styles = StyleSheet.create({
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
-  empty: { paddingVertical: 24, alignItems: 'center' },
-  hint: { marginTop: 8, fontSize: fontSize.small, color: colors.lightGrey },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: space[24] },
+  empty: { paddingVertical: space[24], alignItems: 'center' },
+  hint: { marginTop: space[8], fontSize: fontSize.small, color: colors.lightGrey },
   message: {
     fontSize: fontSize.small,
     color: colors.lightGrey,
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: space[12],
   },
   retry: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 14,
-    borderWidth: 1,
+    paddingHorizontal: space[16],
+    paddingVertical: space[6],
+    borderRadius: radius.pill,
+    borderWidth: borderWidth.thin,
     borderColor: colors.blue,
   },
   retryText: { color: colors.blue, fontSize: fontSize.small },

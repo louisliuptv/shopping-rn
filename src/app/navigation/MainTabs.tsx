@@ -1,6 +1,6 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { colors, fontSize } from '../theme/tokens';
+import { colors, fontSize, fontWeight, metrics, borderWidth } from '../theme/tokens';
 import { GoodsScreen } from '../../features/goods/screens/GoodsScreen';
 import { RatingsScreen } from '../../features/ratings/screens/RatingsScreen';
 import { SellerScreen } from '../../features/seller/screens/SellerScreen';
@@ -16,16 +16,16 @@ export function MainTabs() {
         swipeEnabled: true,
         tabBarStyle: {
           backgroundColor: colors.white,
-          height: 44,
+          height: metrics.tabBarHeight,
           elevation: 0,
           shadowOpacity: 0,
-          borderBottomWidth: 1,
+          borderBottomWidth: borderWidth.thin,
           borderBottomColor: colors.rowLine,
         },
-        tabBarIndicatorStyle: { backgroundColor: colors.blue, height: 2 },
+        tabBarIndicatorStyle: { backgroundColor: colors.blue, height: borderWidth.thick },
         tabBarLabelStyle: {
           fontSize: fontSize.medium,
-          fontWeight: '400',
+          fontWeight: fontWeight.regular,
           textTransform: 'none',
         },
         tabBarActiveTintColor: colors.blue,

@@ -1,6 +1,15 @@
 import React, { useCallback, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import {
+  colors,
+  fontSize,
+  lineHeight,
+  fontWeight,
+  space,
+  radius,
+  borderWidth,
+  metrics,
+} from '../../../app/theme/tokens';
 import { useCartBall } from '../animation/CartBall';
 import { selectFoodCount, useCartStore } from '../store/cartStore';
 
@@ -30,7 +39,7 @@ export function CartControl({ foodId, testID }: CartControlProps) {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Decrease quantity"
-            hitSlop={8}
+            hitSlop={space[8]}
             onPress={() => remove(foodId)}
             style={styles.button}
             testID={`cart-decrease-${foodId}`}
@@ -45,7 +54,7 @@ export function CartControl({ foodId, testID }: CartControlProps) {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Increase quantity"
-        hitSlop={8}
+        hitSlop={space[8]}
         onPress={addWithBall}
         style={styles.button}
         ref={plusRef}
@@ -60,23 +69,23 @@ export function CartControl({ foodId, testID }: CartControlProps) {
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   button: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 1,
+    width: metrics.cartControlSize,
+    height: metrics.cartControlSize,
+    borderRadius: radius.pill,
+    borderWidth: borderWidth.thin,
     borderColor: colors.blue,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 0,
+    padding: space[0],
   },
   symbol: {
     color: colors.blue,
     fontSize: fontSize.large,
-    lineHeight: 18,
-    fontWeight: '600',
+    lineHeight: lineHeight.body,
+    fontWeight: fontWeight.semibold,
   },
   count: {
-    minWidth: 26,
+    minWidth: metrics.cartControlMinWidth,
     textAlign: 'center',
     fontSize: fontSize.smallS,
     color: colors.grey,

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { CART_BAR_HEIGHT, colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius, zIndex, metrics } from '../../../app/theme/tokens';
 import { formatPrice, type CartSummary } from '../../../domain/usecases/cartUseCases';
 import { Bubble } from '../../../shared/ui/Bubble';
 import { useCartBall } from '../animation/CartBall';
@@ -40,7 +40,7 @@ export function CartBar({ summary, deliveryPrice, bottomInset }: CartBarProps) {
     setPayOpen(true);
   }, [summary.payEnabled]);
 
-  const barHeight = CART_BAR_HEIGHT + bottomInset;
+  const barHeight = metrics.cartBarHeight + bottomInset;
 
   return (
     <>
@@ -89,38 +89,49 @@ export function CartBar({ summary, deliveryPrice, bottomInset }: CartBarProps) {
 const styles = StyleSheet.create({
   bar: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 50,
+    left: space[0],
+    right: space[0],
+    bottom: space[0],
+    zIndex: zIndex.sticky,
     flexDirection: 'row',
     alignItems: 'flex-start',
     backgroundColor: colors.background,
-    paddingTop: 0,
+    paddingTop: space[0],
   },
   left: { flex: 1, flexDirection: 'row', alignItems: 'flex-start' },
-  logoWrapper: { marginTop: -10, marginHorizontal: 12, padding: 6, width: 56, height: 56 },
+  logoWrapper: {
+    marginTop: -metrics.cartLogoOverhang,
+    marginHorizontal: space[12],
+    padding: space[6],
+    width: metrics.cartLogoHitArea,
+    height: metrics.cartLogoHitArea,
+  },
   logo: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: metrics.cartLogoSize,
+    height: metrics.cartLogoSize,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.darkGrey,
   },
   logoHighlight: { backgroundColor: colors.blue },
-  badge: { position: 'absolute', top: 0, right: 0 },
+  badge: { position: 'absolute', top: space[0], right: space[0] },
   price: {
-    marginTop: 12,
-    marginRight: 12,
+    marginTop: space[12],
+    marginRight: space[12],
     fontSize: fontSize.large,
-    fontWeight: '700',
+    fontWeight: fontWeight.bold,
     color: colors.lightGrey,
   },
   priceHighlight: { color: colors.white },
-  desc: { marginTop: 14, fontSize: fontSize.smallS, color: colors.lightGrey },
-  pay: { width: 105, height: CART_BAR_HEIGHT, alignItems: 'center', justifyContent: 'center' },
+  desc: { marginTop: space[14], fontSize: fontSize.smallS, color: colors.lightGrey },
+  pay: {
+    width: metrics.cartPayWidth,
+    height: metrics.cartBarHeight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   payDisabled: { backgroundColor: colors.darkGrey },
   payEnabled: { backgroundColor: colors.green },
-  payText: { fontSize: fontSize.small, fontWeight: '700', color: colors.white },
+  payText: { fontSize: fontSize.small, fontWeight: fontWeight.bold, color: colors.white },
 });

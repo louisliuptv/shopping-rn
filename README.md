@@ -87,6 +87,37 @@ export const env = {
 - Android emulator → `10.0.2.2` is the host loopback alias.
 - Physical device → replace `HOST` with your machine's LAN IP.
 
+## Design system
+
+Every visual value comes from `src/app/theme/tokens.ts` — no screen or component
+hardcodes a font size, padding, radius or structural dimension.
+
+| token | scale | example |
+|---|---|---|
+| `colors` | Vue palette + support-badge colours | `colors.blue` |
+| `fontSize` | 8–34px type ramp | `fontSize.medium` |
+| `lineHeight` | 14–34px | `lineHeight.body` |
+| `fontWeight` | 400 / 500 / 600 / 700 | `fontWeight.bold` |
+| `space` | 2px rhythm keyed by px (0, 1, 2 … 32) | `space[18]` |
+| `radius` | 1–12 plus `pill` | `radius.pill` |
+| `borderWidth` | 1 / 1.5 / 2 | `borderWidth.thin` |
+| `zIndex` | raised / sticky / overlay | `zIndex.sticky` |
+| `metrics` | structural sizes (cart bar, thumb, rail, header) | `metrics.foodThumbSize` |
+| `icons`, `starGlyphs`, `supportTagSizes` | icon and badge geometry | `icons.cart.basketWidth` |
+| `motion` | drop-ball size, duration and easing | `motion.ball.duration` |
+
+```tsx
+const styles = StyleSheet.create({
+  row: { marginHorizontal: space[18], paddingBottom: space[18] },
+  name: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, marginBottom: space[8] },
+  price: { fontSize: fontSize.medium, color: colors.red, marginRight: space[8] },
+});
+```
+
+Spacing is keyed by pixel value on a 2px rhythm, so the React Native port keeps the
+Vue layout pixel-for-pixel while every value still comes from one scale. Change
+`tokens.ts` and the whole app re-themes; a component never invents its own value.
+
 ## Project layout
 
 ```

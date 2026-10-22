@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius } from '../../../app/theme/tokens';
 
 interface PayDialogProps {
   visible: boolean;
@@ -31,29 +31,29 @@ const styles = StyleSheet.create({
   card: {
     width: '76%',
     backgroundColor: colors.white,
-    borderRadius: 8,
-    paddingTop: 20,
-    paddingHorizontal: 18,
-    paddingBottom: 0,
+    borderRadius: radius.l,
+    paddingTop: space[20],
+    paddingHorizontal: space[18],
+    paddingBottom: space[0],
     overflow: 'hidden',
   },
   title: {
     fontSize: fontSize.large,
-    fontWeight: '700',
+    fontWeight: fontWeight.bold,
     color: colors.darkGrey,
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: space[12],
   },
   content: {
     fontSize: fontSize.medium,
     color: colors.grey,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: space[20],
   },
   button: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
-    paddingVertical: 14,
+    paddingVertical: space[14],
     alignItems: 'center',
   },
   buttonText: { fontSize: fontSize.large, color: colors.blue },

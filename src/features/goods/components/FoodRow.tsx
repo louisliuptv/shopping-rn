@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize } from '../../../app/theme/tokens';
+import { colors, fontSize, fontWeight, space, radius, metrics } from '../../../app/theme/tokens';
 import type { Food } from '../../../domain/entities/shop';
 import { formatPrice } from '../../../domain/usecases/cartUseCases';
 import { RemoteImage } from '../../../shared/ui/RemoteImage';
@@ -19,7 +19,12 @@ export function FoodRow({ food, onPress }: FoodRowProps) {
       testID={`food-row-${food.id}`}
       accessibilityRole="button"
     >
-      <RemoteImage uri={food.icon} width={57} height={57} style={styles.icon} />
+      <RemoteImage
+        uri={food.icon}
+        width={metrics.foodThumbSize}
+        height={metrics.foodThumbSize}
+        style={styles.icon}
+      />
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={1}>
           {food.name}
@@ -48,24 +53,24 @@ export function FoodRow({ food, onPress }: FoodRowProps) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    marginHorizontal: 18,
-    marginTop: 18,
-    paddingBottom: 18,
+    marginHorizontal: space[18],
+    marginTop: space[18],
+    paddingBottom: space[18],
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.rowLine,
   },
-  icon: { marginRight: 10, borderRadius: 2 },
-  content: { flex: 1, minHeight: 57 },
-  name: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: 8 },
-  desc: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: 8 },
-  extra: { flexDirection: 'row', marginBottom: 4 },
-  extraText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: 12 },
+  icon: { marginRight: space[10], borderRadius: radius.s },
+  content: { flex: 1, minHeight: metrics.foodRowMinHeight },
+  name: { fontSize: fontSize.medium, color: colors.darkGrey, marginBottom: space[8] },
+  desc: { fontSize: fontSize.smallS, color: colors.lightGrey, marginBottom: space[8] },
+  extra: { flexDirection: 'row', marginBottom: space[4] },
+  extraText: { fontSize: fontSize.smallS, color: colors.lightGrey, marginRight: space[12] },
   priceRow: { flexDirection: 'row', alignItems: 'baseline' },
-  price: { fontSize: fontSize.medium, fontWeight: '700', color: colors.red, marginRight: 8 },
+  price: { fontSize: fontSize.medium, fontWeight: fontWeight.bold, color: colors.red, marginRight: space[8] },
   oldPrice: {
     fontSize: fontSize.smallS,
     color: colors.lightGrey,
     textDecorationLine: 'line-through',
   },
-  control: { position: 'absolute', right: 0, bottom: 12 },
+  control: { position: 'absolute', right: space[0], bottom: space[12] },
 });

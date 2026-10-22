@@ -1,20 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import {
+  colors,
+  fontWeight,
+  space,
+  radius,
+  metrics,
+  supportTagSizes,
+} from '../../app/theme/tokens';
 import type { Support } from '../../domain/entities/shop';
 
 const BADGES: Record<number, { label: string; background: string }> = {
-  0: { label: 'off', background: '#f07373' },
-  1: { label: '%', background: '#fbbd41' },
-  2: { label: 'new', background: '#4ea7e8' },
-  3: { label: 'inv', background: '#61c47a' },
-  4: { label: 'safe', background: '#9b8ade' },
-};
-
-const SIZE_MAP: Record<number, { height: number; font: number }> = {
-  1: { height: 12, font: 8 },
-  2: { height: 16, font: 9 },
-  3: { height: 12, font: 8 },
-  4: { height: 16, font: 9 },
+  0: { label: 'off', background: colors.supportOff },
+  1: { label: '%', background: colors.supportDiscount },
+  2: { label: 'new', background: colors.supportNew },
+  3: { label: 'inv', background: colors.supportInvoice },
+  4: { label: 'safe', background: colors.supportSafe },
 };
 
 interface SupportTagProps {
@@ -24,15 +25,15 @@ interface SupportTagProps {
 
 export function SupportTag({ support, size = 1 }: SupportTagProps) {
   const badge = BADGES[support.type] ?? BADGES[2];
-  const metrics = SIZE_MAP[size] ?? SIZE_MAP[1];
+  const variant = supportTagSizes[size as keyof typeof supportTagSizes] ?? supportTagSizes[1];
 
   return (
     <View
-      style={[styles.tag, { height: metrics.height, backgroundColor: badge.background }]}
+      style={[styles.tag, { height: variant.height, backgroundColor: badge.background }]}
       accessibilityLabel={support.description}
     >
       <Text
-        style={[styles.label, { fontSize: metrics.font, lineHeight: metrics.height }]}
+        style={[styles.label, { fontSize: variant.font, lineHeight: variant.height }]}
         numberOfLines={1}
       >
         {badge.label}
@@ -45,9 +46,9 @@ const styles = StyleSheet.create({
   tag: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 3,
-    minWidth: 12,
-    borderRadius: 2,
+    paddingHorizontal: space[3],
+    minWidth: metrics.supportTagMinWidth,
+    borderRadius: radius.s,
   },
-  label: { color: '#ffffff', fontWeight: '700' },
+  label: { color: colors.white, fontWeight: fontWeight.bold },
 });

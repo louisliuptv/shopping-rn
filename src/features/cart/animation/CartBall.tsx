@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
-import { colors } from '../../../app/theme/tokens';
+import { colors, motion } from '../../../app/theme/tokens';
 
 export interface BallPoint {
   x: number;
@@ -31,9 +31,6 @@ const CartBallContext = createContext<CartBallApi | null>(null);
 export function useCartBall(): CartBallApi | null {
   return useContext(CartBallContext);
 }
-
-const BALL_SIZE = 16;
-const BALL_DURATION = 400;
 
 export function CartBallProvider({ children }: { children: React.ReactNode }) {
   const overlayRef = useRef<View>(null);
@@ -96,14 +93,14 @@ function FlyBall({ ball, onFinished }: { ball: Ball; onFinished: (id: number) =>
   useEffect(() => {
     const moveX = Animated.timing(progressX, {
       toValue: 1,
-      duration: BALL_DURATION,
+      duration: motion.ball.duration,
       easing: Easing.linear,
       useNativeDriver: true,
     });
     const moveY = Animated.timing(progressY, {
       toValue: 1,
-      duration: BALL_DURATION,
-      easing: Easing.bezier(0.49, -0.29, 0.75, 0.41),
+      duration: motion.ball.duration,
+      easing: Easing.bezier(...motion.ball.ease),
       useNativeDriver: true,
     });
 
@@ -124,7 +121,7 @@ function FlyBall({ ball, onFinished }: { ball: Ball; onFinished: (id: number) =>
     <Animated.View
       style={[
         styles.ball,
-        { left: from.x - BALL_SIZE / 2, top: from.y - BALL_SIZE / 2 },
+        { left: from.x - motion.ball.size / 2, top: from.y - motion.ball.size / 2 },
         {
           transform: [
             {
@@ -150,9 +147,9 @@ const styles = StyleSheet.create({
   root: { flex: 1 },
   ball: {
     position: 'absolute',
-    width: BALL_SIZE,
-    height: BALL_SIZE,
-    borderRadius: BALL_SIZE / 2,
+    width: motion.ball.size,
+    height: motion.ball.size,
+    borderRadius: motion.ball.size / 2,
     backgroundColor: colors.blue,
   },
 });
