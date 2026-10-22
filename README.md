@@ -1,8 +1,8 @@
 # shopping-rn
 
-A React Native port of the Vue food-delivery demo: browse the menu, build a cart,
-read reviews and view the merchant — rebuilt with a modern RN stack and a
-Material Design 3 UI (React Native Paper).
+A React Native food-delivery app: browse the menu, build a cart, read reviews and
+view the merchant — built with a modern RN stack and a Material Design 3 UI
+(React Native Paper).
 
 ## Tech stack
 
@@ -63,7 +63,9 @@ Other useful commands: `npm test`, `npm run typecheck`, `npm run lint`.
 
 ## Demo
 
-[![Demo](docs/demo-thumb.png)](docs/demo.mp4)
+![App demo](docs/demo.gif)
+
+The GIF plays directly on GitHub. Full recording: [demo.mp4](docs/demo.mp4).
 
 A short walkthrough of the menu, category navigation, cart, checkout dialog, reviews
-and merchant screens — recorded on the Android emulator.
+and merchant screens.
